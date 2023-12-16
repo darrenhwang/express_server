@@ -98,7 +98,7 @@ var CONST;
         SOCKET_EVENT["teamCfgUpdate"] = "teamCfgUpdate";
         /** 活动刷新 */
         SOCKET_EVENT["update_act"] = "update_act";
-    })(SOCKET_EVENT = CONST.SOCKET_EVENT || (CONST.SOCKET_EVENT = {}));
+    })(SOCKET_EVENT = CONST.SOCKET_EVENT || (CONST.SOCKET_EVENT = {}));//
 })(CONST || (CONST = {}));
 var H;
 (function (H) {
