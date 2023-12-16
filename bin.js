@@ -79,6 +79,7 @@ const exec = (shell, cb) => {
     }
     
     const change = (tableName) => {
+        if (!tableName) throw '请配置数据库database';
         let daoName = '';
         let enumName = 'I';
         let flag = false; //下个字母是否需要大写
@@ -127,44 +128,44 @@ const exec = (shell, cb) => {
                 value_list.forEach(info => {
                     if (info && info.$ && info.$.name) {
                         needToDate.push(info.$.name);
-                        inf.push(`        /** ${info._} */       
+                        inf.push(`        /** ${info._ || info.$.title} */       
         ${info.$.name}?: Date;`);
-                        enu.push(`        /** ${info._} */
+                        enu.push(`        /** ${info._ || info.$.title} */
         ${info.$.name} = "${info.$.name}",`);
 
                         let $ = info.$;
-                        sqlKey_list.push('    `' + info.$.name + '` ' + `${key} ${$.required ? 'not null ' : ''}comment '${info._}',`);
+                        sqlKey_list.push('    `' + info.$.name + '` ' + `${key} ${$.required ? 'not null ' : ''}comment '${info._ || info.$.title}',`);
                     }
                 });
 
             } else if (["int", "bigint"].indexOf(key) > -1) {
                 value_list.forEach(info => {
                     if (info && info.$ && info.$.name) {
-                        inf.push(`        /** ${info._} */       
+                        inf.push(`        /** ${info._ || info.$.title} */       
         ${info.$.name}?: number;`);
-                        enu.push(`        /** ${info._} */
+                        enu.push(`        /** ${info._ || info.$.title} */
         ${info.$.name} = "${info.$.name}",`);
 
                         let $ = info.$;
-                        sqlKey_list.push('    `' + $.name + '` ' + `${key} ${$.required ? 'not null ' : ''}${$.default != null ? 'default ' + $.default + ' ' : ''}${$.auto ? 'not null auto_increment ' : ''}comment '${info._}',`);
+                        sqlKey_list.push('    `' + $.name + '` ' + `${key} ${$.required ? 'not null ' : ''}${$.default != null ? 'default ' + $.default + ' ' : ''}${$.auto ? 'not null auto_increment ' : ''}comment '${info._ || info.$.title}',`);
                     }
                 });
             } else if (["varchar", "text", "mediumtext"].indexOf(key) > -1) {
                 value_list.forEach(info => {
                     if (info && info.$ && info.$.name) {
                         if (info.$.type && (info.$.type == "any" || info.$.type.indexOf("[]"))) {
-                            inf.push(`        /** ${info._} */       
+                            inf.push(`        /** ${info._ || info.$.title} */       
         ${info.$.name}?: ${info.$.type};`);
                             needToList.push(info.$.name)
                         } else {
-                            inf.push(`        /** ${info._} */       
+                            inf.push(`        /** ${info._ || info.$.title} */       
         ${info.$.name}?: string;`);
                         }
-                        enu.push(`        /** ${info._} */
+                        enu.push(`        /** ${info._ || info.$.title} */
         ${info.$.name} = "${info.$.name}",`);
 
                         let $ = info.$;
-                        sqlKey_list.push('    `' + $.name + '` ' + `${$.length != null ? key + '(' + $.length  + ')' : key} ${$.required ? 'not null ' : ''}${$.default != null ? 'default ' + $.default + ' ' : ''}comment '${info._}',`);
+                        sqlKey_list.push('    `' + $.name + '` ' + `${$.length != null ? key + '(' + $.length  + ')' : key} ${$.required ? 'not null ' : ''}${$.default != null ? "default '" + $.default + "' " : ''}comment '${info._ || info.$.title}',`);
                     }
                 });
             }
@@ -180,7 +181,7 @@ ${ inf.join('\n') }
         //初始化类
         let interface = `    export class ${daoClass} extends ${extends_dao ? extends_dao : "Dao"}<${entity}, ${enumName}>{
         constructor(cfg ? : MysqlCfg) {
-            super();
+            super(cfg);
             this.needToList = ${JSON.stringify(needToList)};
             this.needToDate = ${JSON.stringify(needToDate)};
             this.tableName = '${tableName}';
@@ -225,12 +226,11 @@ ${ inf.join('\n') }
             })
         }
 
-
         let create_sql = `create table ${tableName}
 (
 ${sqlKey_list.join('\n')}
 ${other_list.join(',\n')}
-) DEFAULT CHARSET=utf8 comment='${table.comment[0]}';  `;
+) DEFAULT CHARSET=utf8 comment='${table.comment ? table.comment[0] : ""}';  `;
 
         return create_sql;
     }
@@ -263,7 +263,7 @@ ${other_list.join(',\n')}
             dao_content_list.push(`    export let mysql_${fileName_pre} = initPool(${client_cfg});          
     export class ${extends_dao}<S, U> extends Dao<S, U> {
         constructor(cfg ? : MysqlCfg) {
-            super();
+            super(cfg);
         }
 
         get client(): any {

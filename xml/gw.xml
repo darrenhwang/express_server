@@ -1,0 +1,186 @@
+<ds namespace="H" database="gw">
+    <table name="g_db_config" primary="name" key-ignore="true" gen-types="server,gm">
+        <comment>数据库配置</comment>
+        <varchar name="name" length="128" title="数据库名称"/>
+        <varchar name="host" length="256" title="地址"/>
+        <varchar name="host_read" length="256" title="只读地址"/>
+        <int name="port" title="端口号"/>
+        <varchar name="user" length="16" title="用户名"/>
+        <varchar name="password" length="32" title="密码"/>
+        <int name="connectionLimit" title="最大连接数"/>
+    </table>
+
+    <table name="g_grp" primary="appName,grpId" key-ignore="true" gen-types="server,gm">
+        <comment>服务器组配置</comment>
+        <varchar name="appName" length="32" title="应用名称">'*'表示公共配置，是非常特殊的</varchar>
+        <int name="grpId" title="服务器组"/>
+        <varchar name="logLvl" length="128" title="日志等级">{"default":3,"mo.DB":3}</varchar>
+        <int name="status" title="状态">
+            <combo>
+                <opt name="maintain" value="0">维护</opt>
+                <opt name="lianghao" value="1">良好</opt>
+                <opt name="huobao" value="2">火爆</opt>
+            </combo>
+        </int>
+        <int name="isClose" title="是否关闭">
+            <combo>
+                <opt name="no" value="0">否</opt>
+                <opt name="yes" value="1">是</opt>
+            </combo>
+        </int>
+        <int name="isDev" default="null" title="开发模式">
+            <comment>默认一定要为null，不能默认为0，否则配置的继承与覆盖功能将会失效</comment>
+            <combo>
+                <opt name="no" value="0">否</opt>
+                <opt name="yes" value="1">是</opt>
+            </combo>
+        </int>
+        <int name="visible" title="是否可见">
+            <comment>默认为0，不可见。目前只有gs服用。</comment>
+            <combo>
+                <opt name="no" value="0">否</opt>
+                <opt name="yes" value="1">是</opt>
+            </combo>
+        </int>
+        <datetime name="openTime" title="开启时间"/>
+        <datetime name="mergerTime" title="合服时间"/>
+        <text name="ext" type="any" title="拓展参数"/>
+        <varchar name="$env" length="1024" title="环境配置">目前主要用于配置日志插件，只在公共项配置就好。</varchar>
+    </table>
+
+    <table name="g_grp_idx" primary="idx">
+        <comment>分服服务器组下标配置</comment>
+        <int name="idx" title="分服下标"/>
+        <int name="grpId" title="应用服务器组id"/>
+        <varchar name="name" length="32" title="名称"/>
+        <int name="weight" title="权重">用于导量时候的随机规则</int>
+        <int name="isNew" default="0" title="是否新服">
+            <comment>如果是新服，则会被用于导量</comment>
+            <combo>
+                <opt name="no" value="0">否</opt>
+                <opt name="yes" value="1">是</opt>
+            </combo>
+        </int>
+    </table>
+
+    <table name="g_server_name_lang" primary="idx,lang">
+        <comment>服务器组下标配置</comment>
+        <int name="idx" title="下标">为0表示通用名字，name的配置格式为: 亚洲-${idx}服</int>
+        <varchar name="lang" length="12" title="语言类型">
+            <combo>
+                <opt name="default" value="default">默认</opt>
+                <opt name="zh" value="zh">中文</opt>
+                <opt name="ft" value="ft">繁体</opt>
+                <opt name="en" value="en">英文</opt>
+                <opt name="jp" value="jp">日语</opt>
+                <opt name="kor" value="kor">韩语</opt>
+                <opt name="th" value="th">泰语</opt>
+                <opt name="vie" value="vie">越南语</opt>
+                <opt name="idn" value="idn">印尼语</opt>
+                <opt name="spa" value="spa">西班牙语</opt>
+                <opt name="de" value="de">德语</opt>
+                <opt name="fra" value="fra">法语</opt>
+                <opt name="pt" value="pt">葡萄牙语</opt>
+                <opt name="it" value="it">意大利语</opt>
+                <opt name="ru" value="ru">俄语</opt>
+            </combo>
+        </varchar>
+        <varchar name="name" length="32" title="名称"/>
+        <varchar name="mergeName" length="128" title="合服名称"/>
+    </table>
+
+    <table name="g_comp" primary="appName,grpId,compId" key-ignore="true" gen-types="server,gm">
+        <comment>服务器组件配置表</comment>
+        <varchar name="appName" length="32" title="应用名称"/>
+        <int name="grpId" title="服务器组"/>
+        <int name="compId" title="组件id"/>
+        <varchar name="host" length="128" title="域名">外部访问域名，正式环境只有gs配置就好，其他的不需要。开发模式下不配置。</varchar>
+        <int name="port" title="端口号">http或者ws端口号，正式环境只对内网开放</int>
+        <int name="port_ssl" title="ssl端口号">https或者wss端口号，正式环境对外开放。开发模式下配0。</int>
+        <varchar name="runtimeIp" length="128" title="内网运行时IP"/>
+        <varchar name="runtimeIpAppointed" length="128" title="指定的内网运行时IP">如果设置了这个，启动的应用不是这个地址的话，将拒绝启动</varchar>
+        <int name="status" title="状态">
+            <combo>
+                <opt name="disabled" value="0">禁用</opt>
+                <opt name="enabled" value="1">启用</opt>
+            </combo>
+        </int>
+        <datetime name="initTime" title="初始化时间"/>
+        <datetime name="bootTime" title="启动时间"/>
+        <varchar name="logLvl" length="128">日志输出配置为JSON格式：{"default":3,"mo.DB":3}</varchar>
+        <text name="ext" type="any">拓展参数</text>
+        <varchar name="version" length="32">版本号</varchar>
+        <varchar name="desc" length="128">描述</varchar>
+    </table>
+
+    <table name="g_comp_count" primary="appName,grpId,compId,pid" key-ignore="true" gen-types="server,gm">
+        <comment>用于统计各个子进程人数</comment>
+        <varchar name="appName" length="32" title="应用名称"/>
+        <int name="grpId" title="服务器组ID"/>
+        <int name="compId" title="组件ID"/>
+        <int name="pid" title="进程ID"/>
+        <int name="count" title="在线用户数"/>
+        <datetime name="hTime" title="心跳时间"/>
+    </table>
+
+    <table name="g_gs_region" primary="rangeIdx">
+        <comment>区服段配置表</comment>
+        <int name="rangeIdx" title="区服段下标(从0开始)"/>
+        <varchar name="name" length="32" title="名称"/>
+        <varchar name="region" length="32" title="所属地区编码"/>
+        <varchar name="usrPreName" length="4" title="分服标识"/>
+        <int name="sort" title="排序ID"/>
+    </table>
+
+    <table name="g_chn_region" primary="chnId">
+        <comment>渠道区服段配置表</comment>
+        <int name="chnId" length="32" title="渠道ID"/>
+        <varchar name="idxList" length="128" type="number[]" title="段下标列表"/>
+        <varchar name="blackMap" length="512" type="any" title="黑名单配置"/>
+    </table>
+
+    <table name="g_acc_login_hist" primary="aid,token" keys="aid;time" key-ignore="true" gen-types="server,gm">
+        <comment>账号的登录历史 今后还需要在记录更多信息</comment>
+        <int name="aid" required="true" title="账号ID"/>
+        <datetime name="time" title="登录时间"/>
+        <varchar name="ip" length="128" title="登录IP"/>
+        <varchar name="token" length="64" title="登录时候的token"/>
+    </table>
+
+    <table name="g_acc" primary="id" uniques="name">
+        <comment>账号表</comment>
+        <int name="id" auto="true" title="账号ID"/>
+        <varchar name="name" length="64" required="true" title="账号名"/>
+        <int name="status" default="1" title="状态">
+            <comment>用于今后如果黑白名单表过大的一个拓展功能</comment>
+            <combo>
+                <opt name="disabled" value="0">禁用</opt>
+                <opt name="enabled" value="1">启用</opt>
+            </combo>
+        </int>
+
+        <int name="sdkId" default="10000">
+            <combo>
+                <opt name="dev" value="99999">开发</opt>
+                <opt name="modo" value="10000">正式</opt>
+            </combo>
+        </int>
+        <int name="chnId" length="32" title="渠道ID"/>
+        <text name="sdkData" title="sdk数据"/>
+        <int name="sdkArea" title="用户归属大区"/>
+
+        <datetime name="cTime" title="创建时间"/>
+        <varchar name="cIp" length="128" title="创建ip"/>
+        <datetime name="lTime" title="登录时间"/>
+        <varchar name="lIp" length="128" title="登录ip"/>
+        <int name="lCount" default="0" title="登录次数"/>
+
+        <int name="lastGsIdx" title="最后一次分服下标"/>
+        <varchar name="gsIdxList" length="512" type="number[]" title="历史gs">已经登录过的gs服务器列表</varchar>
+        <varchar name="authInfo" type="any" length="512" title="用户授权信息"/>
+        <varchar name="bindBonbon" length="64" title="绑定的Bonbon码"/>
+
+        <int name="packageId" default="0" title="包体ID"/>
+        <varchar name="appVersion" length="128" title="微端版本号"/>
+    </table>
+</ds>

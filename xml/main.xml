@@ -1,0 +1,1031 @@
+<ds namespace="H" database="main">
+    <table name="g_bw_menu" primary="type,func,target,v">
+        <comment>黑白名单</comment>
+        <int name="type" title="类型">
+            <comment>黑、白</comment>
+            <combo>
+                <opt name="black" value="0">黑</opt>
+                <opt name="white" value="1">白</opt>
+            </combo>
+        </int>
+        <int name="func" title="功能">
+            <combo>
+                <opt name="login" value="0">登陆</opt>
+                <opt name="chat" value="1">聊天</opt>
+                <opt name="adv" value="2">广告</opt>
+                <opt name="maintenance" value="3">维护</opt>
+                <opt name="region" value="4">区服段</opt>
+            </combo>
+        </int>
+        <int name="target" title="目标">
+            <combo>
+                <opt name="ip" value="0">IP</opt>
+                <opt name="acc" value="1">账号</opt>
+                <opt name="usr" value="2">用户</opt>
+            </combo>
+        </int>
+        <varchar name="banReason" length="256" title="封号原因"/>
+        <varchar name="v" length="128" title="目标值"/>
+        <datetime name="invalidTime" title="失效时间"/>
+    </table>
+
+    <table name="g_acc_set" primary="aid,type" keys="uid">
+        <comment>玩家账号设置表</comment>
+        <int name="aid" title="玩家账号Id"/>
+        <int name="type" title="设置类型">
+            <combo>
+                <opt name="phoneBind" value="1">手机绑定</opt>
+            </combo>
+        </int>
+        <int name="uid" title="设置的玩家ID"/>
+        <text name="value" type="any" title="设置值"/>
+        <int name="isOpen" title="是否开启"/>
+        <datetime name="recvTime" title="领取时间"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_gs_fml_info" primary="fid" key-ignore="true" gen-types="server,gm">
+        <comment>所有区服宗门信息</comment>
+        <int name="fid" title="宗门ID"/>
+        <varchar name="name" length="50" title="宗门名字"/>
+        <int name="gsIdx" title="所在分服ID"/>
+        <int name="cuid" title="创建者的玩家ID"/>
+        <int name="mstUid" title="会长uid"/>
+        <varchar name="mstName" length="50" title="会长名字"/>
+        <varchar name="mstIco" length="500" title="会长头像"/>
+        <int name="lvl" title="宗门等级"/>
+        <varchar name="ico" length="32" title="家族旗帜"/>
+        <int name="mbCnt" title="宗门成员数"/>
+    </table>
+
+    <table name="g_gs_usr_info" primary="uid" keys="accName;did" key-ignore="true" gen-types="server,gm">
+        <comment>玩家所有区服角色信息</comment>
+        <int name="uid" title="用户ID"/>
+        <varchar name="did" length="16" title="玩家显示ID"/>
+        <int name="aid" title="账号ID"/>
+        <varchar name="name" length="50" title="玩家名称"/>
+        <varchar name="accName" length="64" title="账号名称"/>
+        <int name="gsId" title="区服ID"/>
+        <int name="gsIdx" title="分服下标"/>
+        <int name="sdkId" title="SDKID"/>
+        <int name="chnId" title="渠道ID"/>
+        <varchar name="ico" length="512" title="头像"/>
+        <int name="sex" title="性别"/>
+        <int name="lvl" title="身份等级"/>
+        <int name="vip" title="VIP等级"/>
+        <int name="dmd" title="钻石"/>
+        <int name="gld" title="金币"/>
+        <int name="cmt" title="总属性"/>
+        <int name="fmlId" title="商会ID"/>
+        <int name="ms" title="查询时间戳"/>
+        <datetime name="lTime" title="登陆时间"/>
+        <int name="lOsType" title="登录时候的设备系统类型"/>
+        <varchar name="inviteCode" length="32" title="邀请好友的激活码"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_gs_act_status" primary="batchId,grpId">
+        <comment>区服活动的处理状态</comment>
+        <int name="batchId" title="批次ID"/>
+        <int name="grpId" title="区服ID"/>
+        <int name="status" title="当前状态"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_gs_act_rank_hist" primary="uid,batchId">
+        <comment>区服活动排行历史记录(保存前20名)</comment>
+        <int name="uid" title="玩家ID"/>
+        <int name="batchId" title="批次ID"/>
+        <int name="grpId" title="区服ID"/>
+        <varchar name="name" length="32" title="玩家名字"/>
+        <int name="lvl" title="玩家等级"/>
+        <int name="vip" title="玩家VIP"/>
+        <int name="rank" title="排名"/>
+        <int name="rankValue" title="排行值"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_cp_invite_frds" primary="uid" keys="iUid;accId">
+        <comment>Cp好友邀请列表</comment>
+        <int name="uid" title="玩家ID"/>
+        <int name="accId" title="玩家账号ID"/>
+        <int name="iUid" title="邀请者玩家ID"/>
+        <int name="iAccId" title="邀请者玩家账号ID"/>
+
+        <varchar name="name" length="32" title="玩家名字"/>
+        <int name="lvl" title="玩家等级"/>
+        <int name="vip" title="玩家VIP等级"/>
+        <varchar name="ico" length="512" title="玩家头像"/>
+        <varchar name="thirdIco" length="512" title="玩家第三方头像"/>
+
+        <int name="way" default="1" title="邀请来源">
+            <combo>
+                <opt name="share" value="1">分享邀请</opt>
+                <opt name="code" value="2">邀请码邀请</opt>
+                <opt name="jingQi" value="3">晶绮邀请</opt>
+            </combo>
+        </int>
+
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_rchg_req" primary="orderNo" keys="transId;uid;sdkId">
+        <comment>充值请求</comment>
+        <varchar name="orderNo" length="128" title="游戏订单号"/>
+        <varchar name="transId" length="128" title="平台业务号"/>
+        <int name="uid" title="玩家ID"/>
+        <int name="rid" title="充值项ID"/>
+        <int name="rid_pay" title="实际充值项ID">目的是为了做折扣模式的时候，在实际支付是会切换为其他的充值项的需求</int>
+        <int name="cny" title="实际支付的cny值">在折扣模式下的时候，这个值会按照实际充值时候的折扣充值项的来走</int>
+        <int name="status" title="状态">
+            <comment>三种状态分别对应reqTime、sdkTime和sendTime</comment>
+            <combo>
+                <opt name="req" value="0">拉起请求</opt>
+                <opt name="sdk" value="1">待发货</opt>
+                <opt name="send" value="2">已发货</opt>
+            </combo>
+        </int>
+        <int name="sdkId" required="true"/>
+        <int name="buyType" required="true" title="购买类型">
+            <combo>
+                <opt name="normal" value="0">自充值</opt>
+                <opt name="toDst" value="10">为目标玩家充值</opt>
+                <opt name="fromDst" value="11">被目标玩家充值</opt>
+            </combo>
+        </int>
+        <int name="dstUid" title="目标用户id">buyType为normal的时候值为0，toDst和fromDst的时候为目标用户的id</int>
+        <int name="type" required="true" title="充值类型">类型见CONST.rchgMode。</int>
+        <int name="actBatchId" title="活动批次id">例如type为活动类型时有用，记录充值的活动批次Id</int>
+        <varchar name="value" length="64">type指定模式下对应的值，例如type为活动类型，那么这个值表示的就是活动的id</varchar>
+        <varchar name="ip" length="128" title="支付IP"/>
+        <text name="snapshot" title="快照">用户拉起充值的时候的快照信息，例如vip是多少级等</text>
+        <text name="cbInfo" title="充值回调信息"/>
+        <text name="err" title="错误信息"/>
+        <text name="ext" type="any" title="扩展参数"/>
+        <datetime name="reqTime" title="用户拉起充值请求的时间"/>
+        <datetime name="sdkTime" title="cp接收到平台的支付回调的时间"/>
+        <datetime name="sendTime" title="游戏进行发货的时间"/>
+        <int name="isRefund" title="是否已退款"/>
+    </table>
+
+    <table name="g_only_name" primary="type,typeId" keys="name;type">
+        <comment>名字唯一表</comment>
+        <int name="type" title="类型">
+            <combo>
+                <opt name="fmlName" value="1">家族名称</opt>
+            </combo>
+        </int>
+        <int name="typeId" title="类型对应的ID">例:家族对应的就是家族ID</int>
+        <varchar name="name" length="32" title="名字"/>
+        <int name="status" default="1" title="状态">
+            <combo>
+                <opt name="disabled" value="0">失效</opt>
+                <opt name="enabled" value="1">生效</opt>
+            </combo>
+        </int>
+    </table>
+
+    <table name="g_custom_ico" primary="md5">
+        <comment>玩家自定义头像md5与base64映射表</comment>
+        <varchar name="md5" length="32" title="MD5值"/>
+        <text name="imgText" length="base64值"/>
+    </table>
+
+    <table name="g_act_tmp" primary="id">
+        <comment>活动模板表</comment>
+        <int name="id" title="模板id">id做了约束,通过规则生成</int>
+        <varchar name="name" length="64" title="模板名称"/>
+        <varchar name="desc" length="64" title="模板简要描述"/>
+        <int name="type" required="true" title="活动类型">
+            <combo>
+                <!--系统活动:01-19 -->
+                <opt name="fashionShop" value="1">时装商城[占用]</opt>
+                <opt name="kingOrder" value="2">通行证[占用]</opt>
+
+                <!--充值活动:20-49-->
+                <opt name="rchg_sum" value="20">累计充值</opt>
+                <opt name="rchg_sum_d" value="21">每日充值</opt>
+                <opt name="rchg_days" value="22">累天充值</opt>
+                <opt name="rchg_dgift" value="23">每日礼包</opt>
+                <opt name="rchg_mine" value="24">海岛礼包</opt>
+                <opt name="rchg_rune" value="25">符石礼包[废弃]</opt>
+                <opt name="rchg_popBag" value="26">弹窗礼包</opt>
+                <opt name="rchg_popBag2" value="27">新弹窗礼包</opt>
+                <opt name="rchg_maze" value="28">迷宫礼包</opt>
+
+                <!--特惠礼包:50-59 -->
+                <opt name="spclGift" value="50">特惠礼包</opt>
+
+                <!-- 冲榜活动:60-90-->
+                <opt name="list_usrLvl" value="60">玩家等级冲榜</opt>
+                <opt name="list_runeCoin" value="61">符石币冲榜</opt>
+
+                <!--运营活动:100-xxx-->
+                <opt name="lTask" value="100">限时活动任务</opt>
+                <opt name="egg" value="101">砸金蛋</opt>
+                <opt name="lottery" value="102">欢乐抽奖机</opt>
+                <opt name="redPacket" value="103">红包雨</opt>
+                <opt name="memory" value="104">记忆大师</opt>
+
+
+            </combo>
+        </int>
+        <varchar name="cnd" type="any" length="512" title="模板条件"/>
+        <varchar name="imgIco" length="128" title="活动图标"/>
+        <varchar name="imgTitle" length="128" title="活动标题Banner图"/>
+        <varchar name="imgBg" length="128" title="活动背景图"/>
+        <text name="giftbag" type="any[]" title="特惠礼包">格式:[{id:,name:,dmd:,},...]</text>
+        <text name="content" type="any[]" title="达标奖励">格式:[[gain,cnd,ext],...]</text>
+        <text name="rank" type="any" title="排行奖励">格式：{"usr:":[],"fml":[]}</text>
+        <text name="rank2" type="any" title="二阶段排行奖励">格式：{"usr:":[],"fml":[]}</text>
+        <text name="task" type="any[]" title="任务奖励">格式:[[type,[[id,reward,tarValue],...]],...]</text>
+        <text name="buy" type="any[]" title="活动商店">格式:[{},...]</text>
+        <varchar name="sItemIds" length="128" type="number[]" title="开放显示的物品列表"/>
+        <varchar name="ext" type="any" length="10240" title="拓展字段" :onlyValidJson="true"/>
+        <varchar name="langMap" length="2" type="{[lang:string]:any}" title="多语言模板映射"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_act_tmp_lang" primary="tmpId,lang">
+        <comment>活动规则表(多语言)</comment>
+        <int name="tmpId" length="11" required="true" title="活动模板Id"/>
+        <varchar name="lang" length="16" required="true" title="语言">
+            <combo>
+                <opt name="zh" value="zh">中文</opt>
+                <opt name="ft" value="ft">繁体</opt>
+                <opt name="zh_sg" value="zh_sg">中文(海外)</opt>
+                <opt name="en" value="en">英文</opt>
+                <opt name="jp" value="jp">日语</opt>
+                <opt name="kor" value="kor">韩语</opt>
+                <opt name="th" value="th">泰语</opt>
+                <opt name="vie" value="vie">越南语</opt>
+                <opt name="idn" value="idn">印尼语</opt>
+                <opt name="msa" value="msa">马来西亚语</opt>
+                <opt name="spa" value="spa">西班牙语</opt>
+                <opt name="de" value="de">德语</opt>
+                <opt name="fra" value="fra">法语</opt>
+                <opt name="pt" value="pt">葡萄牙语</opt>
+                <opt name="it" value="it">意大利语</opt>
+                <opt name="ru" value="ru">俄语</opt>
+                <opt name="tr" value="tr">土耳其语</opt>
+            </combo>
+        </varchar>
+        <varchar name="name" length="64" title="模板名称"/>
+        <varchar name="rule" length="1024" title="活动规则描述"/>
+        <varchar name="textMap" length="4096" type="any" title="文本映射"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_act_batch" primary="id">
+        <comment>活动批次表</comment>
+        <int name="id" auto="true" title="批次ID"/>
+        <varchar name="name" length="64" title="活动名称"/>
+        <varchar name="desc" length="64" title="活动描述"/>
+        <int name="tmpId" required="true" title="模板ID"/>
+        <int name="tmpType" length="11" title="模板类型"/>
+        <int name="status" title="状态">
+            <combo>
+                <opt name="disabled" value="0">失效</opt>
+                <opt name="enabled" value="1">生效</opt>
+            </combo>
+        </int>
+        <int name="effType" title="生效类型">
+            <comment>0表示绝对时间,即使用beginTime字段;1表示根据开服时间,即使用beginDay字段;2表示根据创角时间，即使用beginDay字段;3表示根据合服时间，即使用beginDay字段</comment>
+            <combo>
+                <opt name="absoluteTime" value="0">绝对时间</opt>
+                <opt name="gsOpenTime" value="1">开服时间</opt>
+                <opt name="usrCreateTime" value="2">创角时间</opt>
+                <opt name="gsMergerTime" value="3">合服时间</opt>
+            </combo>
+        </int>
+        <datetime name="beginTime" title="开始时间">对应effType=0</datetime>
+        <varchar name="beginDay" length="16" title="开服几天后生效">对应effType=1或者2,配置的表达式为: 天数,小时数,分钟数 或者: 天数,小时数 或者: 天数.</varchar>
+        <varchar name="duration" length="16" title="活动持续的时间">配置的表达式为: 天数,小时数,分钟数 或者: 天数,小时数 或者: 天数.</varchar>
+        <varchar name="duration_before" length="16" title="活动开始前显示持续的时间">配置的表达式和duration一致</varchar>
+        <varchar name="duration_after" length="16" title="活动结束后显示持续的时间">配置的表达式和duration一致</varchar>
+        <int name="sort" title="排序(越小越前面)"/>
+        <int name="noticeId" default="0" title="公告模板ID"/>
+        <varchar name="gsIdList_white" length="1024" type="string[]" title="分服白名单">格式：[1,"1-2", "2:*"]</varchar>
+        <varchar name="gsIdList_black" length="1024" type="string[]" title="分服黑名单">格式：[1,"1-2", "2:*"]</varchar>
+        <text name="roomMap" type="any" title="跨服分组映射"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_act_grp" primary="id">
+        <comment>活动分服表</comment>
+        <int name="id" auto="true" title="主键ID"/>
+        <varchar name="grpIdList" length="2096" type="number[]" title="开启的区服列表">这里不做黑白名单，一般是对几个指定区服开启</varchar>
+        <int name="batchId" required="true" title="活动批次ID"/>
+        <varchar name="name" length="64" title="活动名称"/>
+        <varchar name="desc" length="64" title="活动描述"/>
+        <int name="tmpId" required="true" title="模板ID"/>
+        <int name="status" title="状态">
+            <combo>
+                <opt name="disabled" value="0">失效</opt>
+                <opt name="enabled" value="1">生效</opt>
+            </combo>
+        </int>
+        <int name="effType" title="生效类型">
+            <comment>0表示绝对时间,即使用beginTime字段;1表示根据开服时间,即使用beginDay字段;2表示根据创角时间，即使用beginDay字段</comment>
+            <combo>
+                <opt name="absoluteTime" value="0">绝对时间</opt>
+                <opt name="gsOpenTime" value="1">开服时间</opt>
+                <opt name="usrCreateTime" value="2">创角时间</opt>
+            </combo>
+        </int>
+        <datetime name="beginTime" title="开始时间">对应effType=0</datetime>
+        <varchar name="beginDay" length="16" title="开服几天后生效">同g_act_batch表</varchar>
+        <varchar name="duration" length="16" title="活动持续的时间">同g_act_batch表</varchar>
+        <varchar name="duration_before" length="16" title="活动开始前显示持续的时间">同g_act_batch表</varchar>
+        <varchar name="duration_after" length="16" title="活动结束后显示持续的时间">同g_act_batch表</varchar>
+        <int name="sort" title="排序(越小越前面)"/>
+        <int name="noticeId" default="0" title="公告模板ID"/>
+        <datetime name="uTime" title="更新时间">记录的是GM更新的时候的更新时间</datetime>
+    </table>
+
+    <table name="g_act_notice" primary="id">
+        <comment>活动公告信息</comment>
+        <int name="id" auto="true" title="公告ID"/>
+        <varchar name="name" length="50" title="公告名字(无用运营看)"/>
+        <int name="mainType" title="对应的活动主类型">额外字段，避免要建结构体</int>
+        <varchar name="ttl" length="50" title="活动标题"/>
+        <text name="content" title="活动内容"/>
+        <varchar name="img" length="1024" title="内容图片"/>
+        <varchar name="img_frm" length="1024" title="图片边框"/>
+        <int name="isHot" default="0" title="是否是热门活动">
+            <combo>
+                <opt name="no" value="0">否</opt>
+                <opt name="yes" value="1">是</opt>
+            </combo>
+        </int>
+        <int name="isTurns" title="是否轮播">
+            <combo>
+                <opt name="no" value="0">否</opt>
+                <opt name="yes" value="1">是</opt>
+            </combo>
+        </int>
+        <int name="sort" title="排序(越大越前面)"/>
+        <int name="cd" title="剩余CD">额外字段，避免要建结构体</int>
+        <int name="isNew" title="是否是新公告">额外字段，避免要建结构体</int>
+        <varchar name="param" type="any" length="32" title="参数">额外字段，避免要建结构体</varchar>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_act_notice_lang" primary="tmpId,lang">
+        <comment>活动公告信息-多语言</comment>
+        <int name="tmpId" default="0">m_notice中的id</int>
+        <varchar name="lang" length="12" title="语言类型">
+            <combo>
+                <opt name="zh" value="zh">中文</opt>
+                <opt name="ft" value="ft">繁体</opt>
+                <opt name="zh_sg" value="zh_sg">中文(海外)</opt>
+                <opt name="en" value="en">英文</opt>
+                <opt name="jp" value="jp">日语</opt>
+                <opt name="kor" value="kor">韩语</opt>
+                <opt name="th" value="th">泰语</opt>
+                <opt name="vie" value="vie">越南语</opt>
+                <opt name="idn" value="idn">印尼语</opt>
+                <opt name="msa" value="msa">马来西亚语</opt>
+                <opt name="spa" value="spa">西班牙语</opt>
+                <opt name="de" value="de">德语</opt>
+                <opt name="fra" value="fra">法语</opt>
+                <opt name="pt" value="pt">葡萄牙语</opt>
+                <opt name="it" value="it">意大利语</opt>
+                <opt name="ru" value="ru">俄语</opt>
+                <opt name="tr" value="tr">土耳其语</opt>
+            </combo>
+        </varchar>
+        <varchar name="ttl" length="50" title="活动标题"/>
+        <text name="content" title="活动内容"/>
+        <varchar name="img" length="1024" title="内容图片"/>
+        <varchar name="img_frm" length="1024" title="图片边框"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_mail_tmp" primary="id">
+        <comment>邮件信息内容模板</comment>
+        <int name="id" auto="true" title="模板ID"/>
+        <int name="hours" title="邮件存活时间(小时)"/>
+        <int name="status" default="1" title="状态">
+            <combo>
+                <opt name="disabled" value="0">失效</opt>
+                <opt name="enabled" value="1">生效</opt>
+            </combo>
+        </int>
+        <varchar name="ttl" length="50" title="标题"/>
+        <varchar name="content" length="2048" title="内容"/>
+        <varchar name="ext" length="1024" type="any" title="扩展信息"/>
+    </table>
+
+    <table name="g_mail_tmp_lang" primary="tmpId,lang">
+        <comment>邮件信息内容模板（多语言部分），tmpId需要对应于g_mail_tmp里面的</comment>
+        <int name="tmpId" title="邮件模板id"/>
+        <varchar name="lang" length="16" title="语言">
+            <combo>
+                <opt name="zh" value="zh">中文</opt>
+                <opt name="ft" value="ft">繁体</opt>
+                <opt name="zh_sg" value="zh_sg">中文(海外)</opt>
+                <opt name="en" value="en">英文</opt>
+                <opt name="jp" value="jp">日语</opt>
+                <opt name="kor" value="kor">韩语</opt>
+                <opt name="th" value="th">泰语</opt>
+                <opt name="vie" value="vie">越南语</opt>
+                <opt name="idn" value="idn">印尼语</opt>
+                <opt name="msa" value="msa">马来西亚语</opt>
+                <opt name="spa" value="spa">西班牙语</opt>
+                <opt name="de" value="de">德语</opt>
+                <opt name="fra" value="fra">法语</opt>
+                <opt name="pt" value="pt">葡萄牙语</opt>
+                <opt name="it" value="it">意大利语</opt>
+                <opt name="ru" value="ru">俄语</opt>
+                <opt name="tr" value="tr">土耳其语</opt>
+            </combo>
+        </varchar>
+        <varchar name="ttl" length="50" title="标题"/>
+        <varchar name="content" length="512" title="内容"/>
+    </table>
+
+    <table name="g_mail_all" primary="id" keys="status">
+        <comment>全服邮件，通常是通过GM后台发送的</comment>
+        <int name="id" auto="true" title="全服邮件ID"/>
+        <varchar name="gsIdList_white" length="1024" type="string[]" title="分服白名单">格式：[100001,"100001-100002", "2:*"]</varchar>
+        <varchar name="gsIdList_black" length="1024" type="string[]" title="分服黑名单">格式：[100001,"100001-100002", "2:*"]</varchar>
+        <int name="status" title="状态">
+            <comment>默认设置为失效状态，我们会将发送全服邮件分为"编辑"、"预览"以及"发送"这几个流程，发送的时候才将状态设置为生效</comment>
+            <combo>
+                <opt name="disabled" value="0">失效</opt>
+                <opt name="enabled" value="1">生效</opt>
+            </combo>
+        </int>
+        <int name="mode" title="邮件模式">
+            模式，如果是0，就表示客户端配置表模式，1表示gm配置模式。
+            <combo>
+                <opt name="xlsx" value="0">xlsx配置模式</opt>
+                <opt name="gm" value="1">GM配置模式</opt>
+            </combo>
+        </int>
+        <int name="tmpId" title="邮件模板ID"/>
+
+        <int name="chnId" title="玩家渠道id">0表示全渠道</int>
+        <int name="lvl" title="玩家等级"/>
+        <int name="vip" title="玩家vip等级"/>
+        <int name="osType" title="设备系统类型"/>
+        <int name="rtType" title="runtime类型"/>
+        <int name="packageId" title="包ID"/>
+        <varchar name="appVersion" length="128" title="微端版本号"/>
+        <int name="readDelHours" title="阅读后几小时删除"/>
+
+        <varchar name="param" type="any" length="512" title="参数"/>
+        <varchar name="items" type="number[][]" length="512" title="物品"/>
+        <varchar name="ext" type="any" length="512" title="拓展字段"/>
+
+        <datetime name="sTime" title="生效时间"/>
+        <datetime name="eTime" title="结束时间"/>
+        <datetime name="cTime" title="添加时间"/>
+    </table>
+
+    <table name="g_notice" primary="id" keys="type;status">
+        <comment>游戏公告</comment>
+        <int name="id" auto="true" title="主键ID"/>
+        <int name="type" default="0" title="类型">
+            <combo>
+                <opt name="gw" value="0">入口公告</opt>
+                <opt name="gs" value="1">分服公告</opt>
+                <opt name="fb" value="2">FB关注公告</opt>
+                <opt name="wj" value="3">问卷调查</opt>
+            </combo>
+        </int>
+        <varchar name="chnIdList" length="256" type="number[]" title="渠道ID列表">为空表示全渠道</varchar>
+        <text name="gsNameList" type="string[]" title="分服列表">格式：[1,"1-2", "*"]</text>
+        <int name="status" default="1" title="状态">
+            <combo>
+                <opt name="disabled" value="0">禁用</opt>
+                <opt name="enabled" value="1">启用</opt>
+            </combo>
+        </int>
+        <varchar name="ttl" length="50" title="标题"/>
+        <text name="content" title="内容"/>
+        <varchar name="img" length="1024" title="内容图片"/>
+        <datetime name="bTime" title="开始时间"/>
+        <datetime name="eTime" title="结束时间"/>
+        <int name="sort" default="0" title="排序"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_notice_lang" primary="tmpId,lang">
+        <comment>游戏公告-多语言</comment>
+        <int name="tmpId" default="0">m_notice中的id</int>
+        <varchar name="lang" length="12" title="语言类型">
+            <combo>
+                <opt name="zh" value="zh">中文</opt>
+                <opt name="ft" value="ft">繁体</opt>
+                <opt name="zh_sg" value="zh_sg">中文(海外)</opt>
+                <opt name="en" value="en">英文</opt>
+                <opt name="jp" value="jp">日语</opt>
+                <opt name="kor" value="kor">韩语</opt>
+                <opt name="th" value="th">泰语</opt>
+                <opt name="vie" value="vie">越南语</opt>
+                <opt name="idn" value="idn">印尼语</opt>
+                <opt name="msa" value="msa">马来西亚语</opt>
+                <opt name="spa" value="spa">西班牙语</opt>
+                <opt name="de" value="de">德语</opt>
+                <opt name="fra" value="fra">法语</opt>
+                <opt name="pt" value="pt">葡萄牙语</opt>
+                <opt name="it" value="it">意大利语</opt>
+                <opt name="ru" value="ru">俄语</opt>
+                <opt name="tr" value="tr">土耳其语</opt>
+            </combo>
+        </varchar>
+        <varchar name="ttl" length="50" title="标题"/>
+        <text name="content" title="内容"/>
+        <varchar name="img" length="1024" title="内容图片"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_sys_msg" primary="id">
+        <comment>系统消息</comment>
+        <int name="id" auto="true" title="主键ID"/>
+        <int name="tmpId" title="模板ID"/>
+        <int name="type" title="消息类型">同消息模板表的type，额外字段，数据库不存该值</int>
+        <varchar name="contentMap" length="2" type="{[lang: string]: string}" title="多语言消息内容映射">额外字段，数据库不存该值</varchar>
+        <varchar name="param" length="1024" type="any" title="内容参数"/>
+        <int name="status" default="0" title="状态">
+            <combo>
+                <opt name="no" value="0">无效</opt>
+                <opt name="yes" value="1">有效</opt>
+            </combo>
+        </int>
+        <text name="grpIds" type="number[]" title="要发送的区服ID，为空表示全服推送"/>
+        <int name="count" default="-1" title="发送次数">-1表示立即发送，其余的表示定时发送，如果count为0，表示无限发送，直到endTime到了</int>
+        <int name="curCount" title="当前已发送次数">只有定时发送模式才有</int>
+        <int name="minutes" title="间隔多少分钟发送一次">只有定时发送模式才有</int>
+        <int name="isEnd" default="0" title="是否结束">
+            <combo>
+                <opt name="no" value="0">否</opt>
+                <opt name="yes" value="1">是</opt>
+            </combo>
+        </int>
+        <datetime name="sendTime" title="发送时间"/>
+        <datetime name="endTime" title="结束时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_sys_msg_tmp" primary="id">
+        <comment>系统消息模板</comment>
+        <int name="id" auto="true" title="主键ID"/>
+        <int name="type" title="消息类型">
+            <combo>
+                <opt value="1" name="chat">聊天栏</opt>
+                <opt value="2" name="marquee">跑马灯</opt>
+                <opt value="3" name="all">聊天栏+跑马灯</opt>
+            </combo>
+        </int>
+        <varchar name="name" length="64" title="模板名称">用于GM编辑的时候做区分</varchar>
+        <varchar name="content" length="512" title="模板内容"/>
+        <varchar name="paramDesc" length="1024" title="参数描述">用于gm编辑的时候，知道需要编辑的参数有哪些</varchar>
+        <datetime name="cTime" title="创建时间"/>
+        <datetime name="uTime" title="更新时间"/>
+    </table>
+
+    <table name="g_sys_msg_tmp_lang" primary="tmpId,lang">
+        <comment>系统消息模板-多语言部分</comment>
+        <int name="tmpId" title="模板ID"/>
+        <varchar name="lang" length="16" title="语言">
+            <combo>
+                <opt name="zh" value="zh">中文</opt>
+                <opt name="ft" value="ft">繁体</opt>
+                <opt name="zh_sg" value="zh_sg">中文(海外)</opt>
+                <opt name="en" value="en">英文</opt>
+                <opt name="jp" value="jp">日语</opt>
+                <opt name="kor" value="kor">韩语</opt>
+                <opt name="th" value="th">泰语</opt>
+                <opt name="vie" value="vie">越南语</opt>
+                <opt name="idn" value="idn">印尼语</opt>
+                <opt name="msa" value="msa">马来西亚语</opt>
+                <opt name="spa" value="spa">西班牙语</opt>
+                <opt name="de" value="de">德语</opt>
+                <opt name="fra" value="fra">法语</opt>
+                <opt name="pt" value="pt">葡萄牙语</opt>
+                <opt name="it" value="it">意大利语</opt>
+                <opt name="ru" value="ru">俄语</opt>
+                <opt name="tr" value="tr">土耳其语</opt>
+            </combo>
+        </varchar>
+        <varchar name="content" length="512" title="内容"/>
+        <datetime name="cTime" title="创建时间"/>
+        <datetime name="uTime" title="更新时间"/>
+    </table>
+
+    <table name="g_subscribe_push_tmp" primary="id">
+        <comment>订阅推送模版</comment>
+        <int name="id" title="配置ID"/>
+        <int name="type" title="订阅类型">
+            <combo>
+                <opt name="nextLogin" value="1">次日登录</opt>
+                <opt name="verUpdate" value="2">版本更新</opt>
+                <opt name="mineBrush" value="3">3级以上矿产刷出</opt>
+                <opt name="mineBeRob" value="4">矿产被掠夺</opt>
+                <opt name="robMineBeBack" value="5">掠夺矿产被抵抗</opt>
+                <opt name="equipBoxUpEnd" value="6">卡牌升级完成</opt>
+                <opt name="rufIncomeFull" value="7">魔法阵晶石已满</opt>
+                <opt name="runePowerFull" value="8">符石体力恢复已满</opt>
+                <opt name="arenaBeChallenge" value="9">决斗场被挑战</opt>
+                <opt name="fmlCopyOpen" value="10">公会副本开启</opt>
+                <opt name="arenaWillEnd" value="11">决斗场即将结榜</opt>
+                <opt name="listWillEnd" value="12">冲榜即将结榜</opt>
+                <opt name="towerWillEnd" value="13">试炼即将结榜</opt>
+                <opt name="mazeOpen" value="14">迷宫即将开启</opt>
+                <opt name="mazePowerFull" value="15">迷宫体力恢复已满</opt>
+                <opt name="mazeWillEnd" value="16">迷宫即将结榜</opt>
+                <opt name="actWillEnd" value="17">玩法类活动即将结榜</opt>
+                <opt name="ruinAutoEnd" value="18">遗迹守护自动结束时</opt>
+                <opt name="ruinBeExpel" value="19">遗迹守护被驱逐</opt>
+                <opt name="ruinBeRob" value="20">遗迹守护被掠夺</opt>
+                <opt name="mineRockBrush" value="21">矿洞3级以上矿石刷新</opt>
+                <opt name="mineRockBeRob" value="22">矿石被掠夺</opt>
+                <opt name="mineRockBeDeport" value="23">矿洞掠夺被驱逐时</opt>
+                <opt name="mineGuardEnd" value="24">保护罩到期时</opt>
+            </combo>
+        </int>
+        <varchar name="tmpId" length="128" title="对应SDK关联模版ID"/>
+        <varchar name="name" length="64" title="模版名称"/>
+        <varchar name="desc" length="128" title="模版描述"/>
+        <text name="dataList" type="any[]" :vue-type="paramList" title="模版Key-value"/>
+        <int name="limitNum"  title="单次推送条数限制"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_subscribe_push" primary="id">
+        <comment>订阅推送配置</comment>
+        <int name="id" auto="true" title="配置id"/>
+        <varchar name="name" length="64" title="模版名称"/>
+        <int name="tmpId" title="订阅推送模版Id"/>
+        <int name="status" title="状态（系统发送类型设置开启）">
+            <combo>
+                <opt name="open" value="1">开启</opt>
+                <opt name="close" value="2">关闭</opt>
+            </combo>
+        </int>
+        <varchar name="chnIdList" length="256" type="any[]" title="生效的渠道列表"/>
+        <varchar name="gsNameList" type="any[]" length="10240" title="分服列表">[1,2-10,"1:*","*"]</varchar>
+        <int name="limitNum"  title="单次推送条数限制"/>
+        <datetime name="cTime" title="创建时间"/>
+        <datetime name="uTime" title="更新时间"/>
+    </table>
+
+    <table name="g_subscribe_push_log" primary="id">
+        <comment>订阅推送记录，这里只记录全服订阅</comment>
+        <int name="id" auto="true" title="配置id"/>
+        <varchar name="name" length="64" title="模版名称"/>
+        <varchar name="tmpId" length="128" title="订阅推送模版Id"/>
+        <varchar name="chnIdList" length="256" type="number[]" title="生效的渠道列表"/>
+        <varchar name="gsNameList" type="any[]" length="10240" title="分服列表">[1,2-10,"1:*","*"]</varchar>
+        <text name="dataList" type="any[]" :vue-type="paramList" title="模版Key-value"/>
+        <varchar name="cnd" length="1024" type="any" title="推送条件"/>
+        <int name="limitNum"  title="单次推送条数限制"/>
+        <datetime name="cTime" title="创建时间"/>
+        <datetime name="uTime" title="更新时间"/>
+    </table>
+
+    <table name="g_open_module" primary="name">
+        <comment>功能开放管理表</comment>
+        <varchar name="name" length="32" title="功能名">
+            <combo>
+                <opt name="home" value="home">角色页面开装备类型（宝箱/抽卡）</opt>
+                <opt name="kingOrder" value="kingOrder">通行证</opt>
+                <opt name="notifyPush" value="notifyPush">消息推送</opt>
+                <opt name="subscribePush" value="subscribePush">订阅推送</opt>
+                <opt name="closeTextInput" value="closeTextInput">关闭文本输入</opt>
+                <opt name="runeClose" value="rune">符石系统关闭</opt>
+                <opt name="customIco" value="customIco">自定义头像</opt>
+                <opt name="wxfri" value="wxfri">微信玩伴</opt>
+                <opt name="quickCreate" value="quickCreate">快速创角</opt>
+                <opt name="isOpenRefund" value="isOpenRefund">退款功能</opt>
+                <opt name="isOpenApiSendMail" value="isOpenApiSendMail">发送邮件</opt>
+                <opt name="chgName" value="chgName">玩家改名</opt>
+                <opt name="ignoreBIItemIds" value="ignoreBIItemIds">bi上报忽略道具配置</opt>
+                <opt name="mine" value="mine">海岛配置</opt>
+                <opt name="verifyCode" value="verifyCode">人机验证码</opt>
+                <opt name="maze" value="maze">迷宫冒险</opt>
+                <opt name="probabilityShare" value="probabilityShare">概率分享</opt>
+                <opt name="dyAtlas" value="dyAtlas">动态合图性能优化</opt>
+
+                <opt name="actItemShow" value="actItemShow">活动道具显示(这个无需GM配置)</opt>
+                <opt name="itemShow" value="itemShow">物品道具显示,所有道具显示项合起来就是所有显示项</opt>
+                <opt name="itemShow_1" value="itemShow_1">物品道具显示1</opt>
+                <opt name="itemShow_2" value="itemShow_2">物品道具显示2</opt>
+                <opt name="itemShow_3" value="itemShow_3">物品道具显示3</opt>
+                <opt name="itemShow_4" value="itemShow_4">物品道具显示4</opt>
+                <opt name="itemShow_5" value="itemShow_5">物品道具显示5</opt>
+                <opt name="itemShow_6" value="itemShow_6">物品道具显示6</opt>
+                <opt name="itemShow_7" value="itemShow_7">物品道具显示7</opt>
+                <opt name="itemShow_8" value="itemShow_8">物品道具显示8</opt>
+                <opt name="itemShow_9" value="itemShow_9">物品道具显示9</opt>
+                <opt name="itemShow_10" value="itemShow_10">物品道具显示10</opt>
+            </combo>
+        </varchar>
+        <int name="status" default="0" title="状态">
+            <combo>
+                <opt name="no" value="0">禁止</opt>
+                <opt name="yes" value="1">开启</opt>
+            </combo>
+        </int>
+        <varchar name="desc" length="64" title="模块描述"/>
+        <varchar name="chnIdList" length="256" type="any[]" title="生效的渠道列表"/>
+        <varchar name="gsNameList" type="any[]" length="1024" title="分服列表">[1,2-10,"1:*","*"]</varchar>
+        <text name="cfg" type="any" title="功能配置" :onlyValidJson="true"/>
+        <datetime name="openTime" title="开始时间"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_open_hide_item" primary="grpId">
+        <comment>开放隐藏道具，主要是根据活动开放</comment>
+        <int name="grpId" title="区服ID"/>
+        <text name="itemIds" type="number[]" title="开放的物品ID列表"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_room_cfg" primary="id">
+        <int name="id" title="房间ID"/>
+        <int name="type" title="房间类型">
+            <comment>1~99表示跨服的配置，100以上表示聊天服的配置</comment>
+            <combo>
+                <opt name="normal" value="1">常规跨服</opt>
+                <opt name="csRank" value="2">跨服排行</opt>
+                <opt name="cosChat" value="3">跨服聊天</opt>
+            </combo>
+        </int>
+        <varchar name="name" length="64" title="房间名称"/>
+        <int name="status" title="启用状态">
+            <combo>
+                <opt name="disabled" value="0">禁用</opt>
+                <opt name="enabled" value="1">启用</opt>
+            </combo>
+        </int>
+        <int name="refOnly" default="0" title="是否只引用">
+            <comment>如果设置成1，则表示只能被引用，不能直接使用，目前仅支持一次引用，不允许递归引用</comment>
+            <combo>
+                <opt name="no" value="0">否</opt>
+                <opt name="yes" value="1">是</opt>
+            </combo>
+        </int>
+        <varchar name="refList" type="number[]" length="1024" title="引用房间ID列表">[roomId1,roomId2]</varchar>
+        <varchar name="linkComp" type="any" length="1024" title="链接的应用组件信息"/>
+        <varchar name="gsNameList" type="any[]" length="1024" title="分服列表">[1,2-10,"1:*","*"]</varchar>
+        <varchar name="grpIdMap" type="{[grpId:number]:number[]}" length="2" title="区服分服列表映射">以grpId为key,合服分服列表为value,程序生成，不保存在数据库</varchar>
+        <varchar name="mark" length="1024" title="备注信息"/>
+        <int name="sort" title="排序ID">排序越大越优先</int>
+        <varchar name="gmUsrNick" length="32" title="记录GM谁更新了"/>
+        <datetime name="uTime" title="更新时间"/>
+    </table>
+
+    <table name="g_room_batch" primary="type,batchId">
+        <int name="type" title="类型：就是g_room_cfg的type"/>
+        <int name="batchId" title="当前的批次ID"/>
+        <int name="status" title="房间状态，这里同活动开启状态"/>
+        <varchar name="steps" length="256" type="number[]" title="已完成的阶段列表"/>
+        <datetime name="batchTime" title="批次时间"/>
+    </table>
+
+    <table name="g_script_cfg" primary="ver,subVer,func">
+        <comment>脚本执行配置</comment>
+        <varchar name="ver" length="64" title="版本号[x.x.x]"/>
+        <int name="subVer" title="子版本号">从0开始,用户定义</int>
+        <varchar name="func" length="64" title="脚本函数"/>
+        <varchar name="gsList" length="1024" type="string[]" title="配置区服列表">Fgs配置模式</varchar>
+        <text name="params" type="any" length="512" title="脚本执行需要的额外参数">由个脚本自定义</text>
+        <varchar name="desc" length="1024" title="脚本内容描述"/>
+        <int name="status">
+            <comment>脚本状态</comment>
+            <combo>
+                <opt name="enable" value="1">有效</opt>
+                <opt name="disable" value="0">无效</opt>
+            </combo>
+        </int>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_script_progress" primary="uid,ver,subVer,func,db">
+        <comment>脚本执行进度表(记录某个玩家是否已执行过脚本)</comment>
+        <int name="uid" title="玩家ID或表的主键ID"/>
+        <varchar name="ver" length="64" title="版本号[x.x.x]"/>
+        <int name="subVer" title="子版本号">从0开始,用户定义</int>
+        <varchar name="func" length="64" title="脚本函数"/>
+        <varchar name="db" length="512" title="DB链接信息"/>
+        <int name="grpId" title="区服ID"/>
+        <varchar name="content" length="2096" title="执行内容信息"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_script_version" primary="ver,subVer,func,db">
+        <comment>脚本执行版本记录表</comment>
+        <varchar name="ver" length="64" title="版本号[x.x.x]"/>
+        <int name="subVer" title="子版本号">从0开始,用户定义</int>
+        <varchar name="func" length="64" title="脚本函数"/>
+        <varchar name="db" length="512" title="DB链接信息"/>
+        <int name="grpId" title="区服ID"/>
+        <int name="status" title="当前状态">
+            <comment>当前状态</comment>
+            <combo>
+                <opt name="no" value="0">未执行</opt>
+                <opt name="yes" value="1">已执行</opt>
+            </combo>
+        </int>
+        <text name="progress" type="any[]" title="执行进度"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_share_cfg" primary="id">
+        <comment>分享配置</comment>
+        <int name="id" title="分享ID(同c_share.xlsx的ID)"/>
+        <varchar name="name" length="64" title="分享名字"/>
+        <int name="hasShare" title="是否有分享">
+            <combo>
+                <opt name="no" value="0">无</opt>
+                <opt name="yes" value="1">有</opt>
+            </combo>
+        </int>
+        <int name="hasVideo" title="是否有视频">
+            <combo>
+                <opt name="no" value="0">无</opt>
+                <opt name="yes" value="1">有</opt>
+            </combo>
+        </int>
+        <varchar name="chnIdList" length="256" type="any[]" title="渠道列表"/>
+        <varchar name="osTypeList" length="256" type="any[]" title="系统列表"/>
+        <varchar name="chgVideo" length="256" type="any" title="功能转换配置"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_share_tmp" primary="id">
+        <comment>分享模板信息</comment>
+        <int name="id" auto="true" title="主键ID"/>
+        <int name="type" title="分享类型">
+            <combo>
+                <opt name="daily" value="1">每日分享</opt>
+                <opt name="group" value="2">群分享</opt>
+                <opt name="invite" value="3">邀请好友</opt>
+            </combo>
+        </int>
+        <varchar name="shareTitle" length="256" title="分享标题"/>
+        <varchar name="shareDesc" length="1024" title="分享描述"/>
+        <varchar name="shareImg" length="256" title="分享图片链接"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_redeem_acc" primary="aid,useCode">
+        <comment>账号使用兑换码信息</comment>
+        <int name="aid" title="账号ID"/>
+        <varchar name="useCode" length="32" title="使用的兑换码"/>
+        <datetime name="useTime" title="使用时间"/>
+    </table>
+
+    <table name="g_redeem_code" entity="IRedeemCode" primary="id">
+        <comment>兑换码使用情况</comment>
+        <int name="id" auto="true" title="主键ID"/>
+        <varchar name="code" length="32" title="兑换码"/>
+        <varchar name="batchCode" required="true" length="32" title="兑换批次码"/>
+        <int name="aid" title="账号Id，如果有兑换，则有值"/>
+        <int name="uid" title="角色Id，如果有兑换，则有值"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_redeem_batch" entity="IRedeemBatch" primary="code">
+        <comment>兑换码批次表</comment>
+        <varchar name="code" length="32" title="批次码"/>
+        <varchar name="name" length="64" required="true" title="名称">目的是为了方便维护，游戏内容没有实际用到</varchar>
+        <int name="status" default="1" title="是否有效">
+            <combo>
+                <opt name="enable" value="1">有效</opt>
+                <opt name="disable" value="0">失效</opt>
+            </combo>
+        </int>
+        <int name="type" required="true" default="1" title="类型">
+            <combo>
+                <opt name="codeOnce" value="1">重复激活</opt>
+                <opt name="accMakeCode" value="2">账号单次激活通码</opt>
+                <opt name="usrMakeCode" value="3">角色单次激活通码</opt>
+                <opt name="usrOnce" value="4">角色单次激活</opt>
+                <opt name="accOnce" value="5">账号单次激活(超甜使用)</opt>
+            </combo>
+        </int>
+        <varchar name="sdkBatch" length="64" title="社区兑换码批次"/>
+        <varchar name="sdkBatchKey" length="64" title="社区兑换批次Key"/>
+        <int name="lvl" default="0" title="角色等级限制"/>
+        <int name="vip" default="0" title="VIP等级限制"/>
+        <varchar name="gsList" length="200" type="any[]" title="分服列表"/>
+        <text name="chnIdList" length="256" type="any[]" title="渠道列表"/>
+        <text name="chnIdList_black" length="256" type="any[]" title="渠道黑名单列表"/>
+        <int name="dailyLimit" default="0" title="是否有每日限制">
+            <combo>
+                <opt name="no" value="0">没有每日限制</opt>
+                <opt name="yes" value="1">每日限制兑换一次</opt>
+            </combo>
+        </int>
+        <varchar name="items" length="512" title="奖励内容" required="true" :vue-type="items">格式为：1,2000;2,10000</varchar>
+        <varchar name="content" length="256" title="内容说明"/>
+        <int name="mailId" default="0" title="领奖邮件ID"/>
+        <datetime name="startTime" title="开始时间"/>
+        <datetime name="endTime" title="结束时间"/>
+        <int name="applyGmUserId" title="发起人id"/>
+        <varchar name="applyGmUserName" length="50" title="发起人名称"/>
+        <int name="reviewerId" title="审核人id"/>
+        <varchar name="reviewerName" length="50" title="审核人名称"/>
+        <int name="isCheck" default="0" title="是否审核">
+            <combo>
+                <opt name="yes" value="1">已审核</opt>
+                <opt name="no" value="0">未审核</opt>
+            </combo>
+        </int>
+        <text name="fail" title="失败记录"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_gift_acc" primary="batchId,aid" keys="batchId;aid">
+        <comment>礼包帐号领取表</comment>
+        <int name="batchId" title="批次ID"/>
+        <int name="aid" title="账号ID"/>
+        <int name="uid" title="玩家ID"/>
+        <int name="gsIdx" title="分服索引"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_gift_batch" primary="id" keys="id">
+        <comment>礼包批次表</comment>
+        <int name="id" default="0" title="类型"/>
+        <varchar name="name" length="64" title="名称(运营看)"/>
+        <int name="type" title="礼包类型">
+            <combo>
+                <opt name="qq" value="0">QQ礼包</opt>
+                <opt name="bonbon" value="1">社区礼包</opt>
+            </combo>
+        </int>
+        <varchar name="gsIdxList" length="200" type="number[]" title="分服索引列表"/>
+        <datetime name="sTime" title="生效时间"/>
+        <datetime name="eTime" title="失效时间"/>
+        <varchar name="items" length="512" title="奖励内容">格式为：1,2000;2,10000</varchar>
+        <varchar name="chnIdList" length="256" type="any[]" title="渠道列表"/>
+        <int name="vip" title="VIP等级限制"/>
+        <int name="lvl" title="角色等级限制"/>
+        <int name="cycleType" title="礼包周期类型"/>
+        <int name="thirdVip" title="第三方的VIP等级限制"/>
+        <int name="status" default="1" title="礼包状态">
+            <combo>
+                <opt name="no" value="0">无效</opt>
+                <opt name="yes" value="1">有效</opt>
+            </combo>
+        </int>
+    </table>
+
+    <table name="g_cron_log" primary="id">
+        <comment>定时器执行日志</comment>
+        <int name="id" auto="true" title="主键ID"/>
+        <int name="grpId" title="区服Id"/>
+        <int name="type" title="类型">
+            <combo>
+                <opt name="mineGoodBrush" value="1">矿场刷出</opt>
+                <opt name="mineRockBrush" value="2">矿洞刷出</opt>
+            </combo>
+        </int>
+        <int name="ms" title="执行秒数"/>
+        <varchar name="data" length="1024" type="any" title="数据"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_reported_usr" primary="type">
+        <comment>被举报的玩家列表</comment>
+        <int name="type" title="类型">
+            <combo>
+                <opt name="mine" value="1">海岛</opt>
+            </combo>
+        </int>
+        <text name="uidList" type="any[]" title="被举报玩家列表"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_table_version" primary="grpId">
+        <comment>数据库表版本,用来处理洗数据</comment>
+        <int name="grpId" title="区服Id"/>
+        <int name="ver" title="最新版本">由程序自己定义，非程序的版本</int>
+        <text name="hasExecVers" type="number[]" title="已执行版本号"/>
+        <datetime name="uTime" title="更新时间"/>
+    </table>
+</ds>

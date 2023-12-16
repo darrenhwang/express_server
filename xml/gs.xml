@@ -1,0 +1,1671 @@
+<ds namespace="H" database="gs">
+    <table name="g_did_pool" primary="gsIdx,suffix" uk="true" keys="key_0:count,lockExpiredMs">
+        <int name="gsIdx" title="分服下标"/>
+        <int name="suffix" title="后缀，1-9999"/>
+        <int name="count" title="已经完成的数量"/>
+        <int name="lockExpiredMs" title="乐观锁失效时间"/>
+        <int name="finishedRangeCount" title="已经完成的段的数量"/>
+        <varchar name="nums" type="number[]" length="64" title="已经生成过的段信息"/>
+    </table>
+
+    <table name="g_usr" primary="id" keys="aIntgr" uk="true" uniques="did">
+        <comment>游戏分服玩家</comment>
+        <int name="id" auto="false" title="玩家ID"/>
+        <varchar name="did" length="16" title="玩家显示ID">这个主要用户前端显示用，今后的前端显示将不能用原来的id，因为里面暴露了太多规则信息了，所以新增了这个显示ID</varchar>
+        <int name="sdkId" required="true" title="平台ID"/>
+        <int name="chnId" required="true" title="渠道ID"/>
+        <varchar name="accName" length="64" title="账号名(openId)"/>
+        <varchar name="name" length="32" title="名称"/>
+        <varchar name="ico" length="512" title="头像"/>
+        <varchar name="icoFrm" length="512" title="头像框"/>
+        <int name="titleId" title="佩戴称号ID"/>
+        <int name="bubbleId" title="佩戴的聊天气泡框"/>
+        <int name="fashion" title="穿戴时装(fashionId*10000+lvl)"/>
+
+        <int name="sex" title="性别">
+            <combo>
+                <opt name="woman" value="0">女</opt>
+                <opt name="man" value="1">男</opt>
+            </combo>
+        </int>
+        <int name="lvl" title="等级"/>
+        <int name="lvlExp" title="等级经验"/>
+        <int name="vip" title="vip等级"/>
+        <int name="vipExp" title="vip经验"/>
+        <int name="cmt" title="总属性"/>
+        <int name="cmt_hist" title="历史最高总属性"/>
+
+        <varchar name="cLang" length="16" title="创建的时候的语言"/>
+        <varchar name="cIp" length="128" title="创建IP"/>
+        <int name="cOsType" title="创建时候的设备系统类型"/>
+        <int name="cRtType" title="创建时候的runtime类型"/>
+        <datetime name="cTime" title="创建时间"/>
+        <datetime name="refundTime" title="还款时间">默认为2021-01-01，欠款时设为2099-01-01，还款时设为当前时间</datetime>
+        <datetime name="rchgResetTime" title="充值重置时间">首充重置使用</datetime>
+        <int name="rchgCnt" title="充值次数"/>
+
+        <varchar name="lLang" length="16" title="登录的时候的语言"/>
+        <varchar name="lIp" length="128" title="登录IP"/>
+        <int name="lOsType" title="登录时候的设备系统类型"/>
+        <int name="lRtType" title="登录时候的runtime类型"/>
+        <datetime name="lTime" title="登录时间"/>
+
+        <int name="inviteesId" title="邀请者玩家ID"/>
+        <varchar name="loc" length="512" type="any" title="定位信息"/>
+        <varchar name="thirdPf" length="20" title="第三方的平台标记"/>
+        <varchar name="thirdOpenId" length="50" title="第三方openId"/>
+        <varchar name="thirdName" length="32" title="第三方名字"/>
+        <varchar name="thirdIco" length="2048" title="第三方头像"/>
+        <datetime name="authTime" title="授权时间"/>
+
+        <mediumtext name="bag" type="any" title="背包">只存放静态物品，格式：{"物品id":数量,"物品id":数量,...}</mediumtext>
+        <int name="histDmd" title="历史砖石总和">只会累加</int>
+        <int name="histDmd_c" title="历史砖石消耗总和">只会累加，c表示consume</int>
+        <int name="dmd" title="钻石"/>
+        <int name="histGld" title="历史金币总和">只统计离线和在线15秒生成</int>
+        <datetime name="gldTime" title="上次计算金币时间"/>
+        <int name="gld" title="金币"/>
+        <int name="gldSp" title="金币增长速度"/>
+
+        <int name="rufMsId" title="开启魔法阵MsId"/>
+        <int name="wingId" title="穿戴的翅膀ID"/>
+        <int name="sacraId" title="穿戴的圣器ID"/>
+        <int name="gemSchemeNo" title="宝石方案编号"/>
+        <int name="faceId" title="佩戴脸部ID"/>
+
+        <varchar name="attr" type="any" length="2048" title="属性"/>
+        <int name="attrDirty" title="属性是否dirty"/>
+        <datetime name="attrRecalTime" title="属性重新计算时间"/>
+
+        <int name="roleCnt" title="角色数量"/>
+        <int name="aIntgr" title="竞技场积分"/>
+        <int name="flag" title="玩家标记">
+            <combo>
+                <opt name="nor" value="0">正常</opt>
+                <opt name="unChgIco" value="1">禁止头像同步</opt>
+            </combo>
+        </int>
+        <int name="isDel" title="是否待删">
+            <comment>待删用户不参与系统排行</comment>
+            <combo>
+                <opt name="nor" value="0">正常</opt>
+                <opt name="del" value="1">待删</opt>
+            </combo>
+        </int>
+        <int name="petMsId" title="上阵宠物MsId"/>
+    </table>
+
+    <table name="g_usr_ol" primary="uid" keys="isOl;hTime">
+        <comment>用户在线信息</comment>
+        <int name="uid" title="玩家ID"/>
+        <int name="isOl" title="是否在线">
+            <combo>
+                <opt name="no" value="0">否</opt>
+                <opt name="yes" value="1">是</opt>
+            </combo>
+        </int>
+        <datetime name="hTime">心跳时间</datetime>
+        <datetime name="lTime" title="登录时间"/>
+        <datetime name="oTime" title="登出时间"/>
+        <datetime name="lLTime" title="最后一次登录时间"/>
+        <datetime name="lOTime" title="最后一次登出时间"/>
+        <int name="tdyMs" title="今日在线时长(毫秒级)"/>
+        <int name="tdyCount" title="今日登录次数"/>
+        <int name="histCount" title="历史登录次数"/>
+        <int name="histSec" title="历史在线秒数"/>
+        <int name="histDays" title="历史登录天数"/>
+        <int name="contDays" title="连续登陆天数"/>
+        <int name="histContDays" title="最大连续登陆天数"/>
+        <int name="pid" key-ignore="true" title="当前所在进程ID"/>
+        <varchar name="token" length="64" key-ignore="true" title="登录后的token值"/>
+        <varchar name="updateKey" length="64" key-ignore="true" title="更新用的key">因为断线重连的时候，我们会将token保持和原来一样，所以不能用token字段进行区分</varchar>
+    </table>
+
+    <table name="g_usr_ext" primary="uid,k" key-ignore="true" gen-types="server,gm">
+        <comment>用户拓展数据</comment>
+        <int name="uid" title="玩家ID"/>
+        <varchar name="k" length="16" title="key"/>
+        <text name="v" type="any" title="value">{"v":....}</text>
+    </table>
+
+    <table name="g_usr_count" primary="uid,type">
+        <comment>用户次数表(每日重置)</comment>
+        <int name="uid" title="玩家ID" required="true"/>
+        <int name="type" title="类型" required="true">
+            <combo>
+                <opt name="askBless" value="0">祝福次数</opt>
+                <opt name="rufUp" value="1">法阵升级</opt>
+                <opt name="wingUp" value="2">翅膀升级</opt>
+                <opt name="customIco" value="3">自定义头像次数</opt>
+                <opt name="fmlCopy" value="4">公会副本次数</opt>
+                <opt name="mineRefresh" value="5">海岛刷新矿产次数</opt>
+                <opt name="mineEmploy" value="6">海岛雇佣哥布林次数</opt>
+                <opt name="ruinPvp" value="7">遗迹守护掠夺次数</opt>
+            </combo>
+        </int>
+        <int name="tdyCnt" title="每日次数"/>
+        <int name="totCnt" title="累计次数"/>
+        <datetime name="rTime" title="刷新时间"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_usr_rcd" primary="uid,type">
+        <comment>用户记录信息表</comment>
+        <int name="uid" title="玩家ID" required="true"/>
+        <int name="type" title="记录类型" required="true"/>
+        <int name="tdyValue" default="0" title="本日记录数值"/>
+        <int name="weekValue" default="0" title="本周记录数值"/>
+        <int name="monthValue" default="0" title="本月记录数值"/>
+        <int name="histValue" default="0" title="历史记录数据"/>
+        <varchar name="valueMap" length="2048" type="any" title="值映射"/>
+        <datetime name="rTime" title="刷新时间"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_usr_set" primary="uid,type">
+        <comment>玩家设置表</comment>
+        <int name="uid" title="玩家ID"/>
+        <int name="type">
+            <combo>
+                <opt name="redSettings" value="1">红点设置</opt>
+                <opt name="notifyPush" value="2">消息推送</opt>
+                <opt name="boxEntrust" value="3">宝箱委托</opt>
+                <opt name="subscribePush" value="4">消息订阅</opt>
+                <opt name="runeEntrust" value="5">符石自动委托</opt>
+                <opt name="runeCostId" value="6">符石中当前使用的灵石ID</opt>
+                <opt name="equipOpr" value="7">分解或出售</opt>
+                <opt name="sysGuide" value="8">系统开启时引导</opt>
+                <opt name="drawCardFast" value="9">快速抽卡</opt>
+                <opt name="runeOffline" value="10">符石离线召唤</opt>
+                <opt name="titleRed" value="11">称号红点</opt>
+                <opt name="mutilEquip" value="12">多倍抽卡</opt>
+                <opt name="mineSkin" value="13">海岛皮肤</opt>
+                <opt name="ftRecord" value="14">战斗录屏开关</opt>
+            </combo>
+        </int>
+        <text name="value" type="any" title="设置值"/>
+        <int name="isOpen" title="是否开启">
+            <combo>
+                <opt name="close" value="0">关闭</opt>
+                <opt name="open" value="1">开启</opt>
+            </combo>
+        </int>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_usr_sdk_rwd" primary="uid,type">
+        <comment>存放玩家领取sdk奖励记录</comment>
+        <int name="uid" title="玩家ID"/>
+        <int name="type">
+            <combo>
+                <opt name="groupShare" value="1">群分享</opt>
+                <opt name="advTrickRwd" value="2">虚假广告防骗指南奖励</opt>
+                <opt name="fmlTrickRwd" value="3">公会拉人防骗指南奖励</opt>
+            </combo>
+        </int>
+        <int name="isOpen" title="是否开启">
+            <combo>
+                <opt name="close" value="0">关闭</opt>
+                <opt name="open" value="1">开启</opt>
+            </combo>
+        </int>
+        <int name="isRecv" title="是否领取"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_usr_login_hist" primary="uid,msId" keys="uid;time" key-ignore="true" gen-types="server,gm">
+        <comment>用户的登录历史</comment>
+        <int name="uid" required="true" title="玩家ID"/>
+        <int name="msId" title="msId"/>
+        <datetime name="time" title="用户登录时间"/>
+        <varchar name="ip" length="128" title="创建ip"/>
+        <varchar name="token" length="64" title="登录时候的token"/>
+    </table>
+
+    <table name="g_usr_ss" primary="uid">
+        <comment>玩家额外数据信息</comment>
+        <int name="uid" title="用户uid"/>
+
+        <varchar name="vipRecv" length="256" type="number[]" title="VIP领取记录"/>
+
+        <varchar name="bindBonbon" length="64" title="绑定的bonbon码"/>
+        <varchar name="redeemCodes" length="1024" type="string[]" title="今日已领取兑换码列表"/>
+
+        <int name="tdySacraDraw" title="圣器今日抽奖次数"/>
+        <int name="totSacraDraw" title="圣器总计抽奖次数"/>
+        <varchar name="sacraDrawRcd" length="4096" type="any" title="圣器抽奖记录">{"id":num}</varchar>
+        <varchar name="actives" length="512" type="any[]" title="玩家近7日活跃值">格式：[[日期,数量],[日期,数量],...}</varchar>
+
+        <datetime name="rTime" title="刷新时间"/>
+        <int name="gemNum" title="宝石数量"/>
+
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+
+        <varchar name="runePlan" length="512" type="any[]" title="符石方案信息"/>
+    </table>
+
+    <table name="g_box" primary="uid,type" uk="true">
+        <int name="uid" title="用户uid"/>
+        <int name="type" title="类型">
+            <combo>
+                <opt name="equip" value="1">装备卡</opt>
+                <opt name="rune" value="2">符石板</opt>
+            </combo>
+        </int>
+        <int name="lvl" default="1" title="等级"/>
+        <int name="exp" title="经验"/>
+        <int name="tdyCount" title="今日抽到目标的数量">例如宝箱的时候，指的是挑战券数量</int>
+        <datetime name="countTime" title="最后一次抽到挑战券的时间"/>
+        <datetime name="eTime_video" title="视频加速冷却结束时间"/>
+        <datetime name="eTime_up" title="等级升级结束时间"/>
+        <int name="cdTime" title="冷却时间时间戳"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_equip_base" primary="uid">
+        <comment>装备基础信息表</comment>
+        <int name="uid" title="用户id"/>
+        <int name="curPlan" title="当前使用方案"/>
+        <varchar name="planMap" length="512" type="any" title="方案信息"/>
+        <varchar name="skinMap" length="256" type="{[partId:number]:number}" title="皮肤幻化信息"/>
+        <varchar name="potMap" length="1024" type="{[partId:number]:any}" title="潜能信息"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_equip" primary="uid,msId">
+        <int name="uid" title="用户uid"/>
+        <int name="msId" title="msId"/>
+        <int name="tmpId" title="模板id"/>
+        <int name="icoId" title="图标id"/>
+        <int name="skinId" title="皮肤id"/>
+        <int name="lvl" title="等级"/>
+        <varchar name="baseAttr" type="any" length="2048" title="基础属性"/>
+        <int name="potLvl" title="潜能等级"/>
+        <int name="potExp" title="潜能经验"/>
+        <datetime name="potEftTime" title="潜能生效时间"/>
+        <int name="isEquip" title="是否装备"/>
+        <int name="isNew" title="是否是新装备"/>
+        <int name="plan" title="方案"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+        <int name="mutil" title="开卡倍数"/>
+    </table>
+
+    <table name="g_handbook" primary="uid,type">
+        <comment>图鉴</comment>
+        <int name="uid" title="用户uid"/>
+        <int name="type" title="类型">
+            <combo>
+                <opt name="equip" value="1">装备</opt>
+                <opt name="ruf" value="2">魔法阵</opt>
+                <opt name="wing" value="4">翅膀</opt>
+                <opt name="title" value="5">称号</opt>
+                <opt name="gem" value="6">宝石</opt>
+                <opt name="gemPaper" value="7">宝石图纸</opt>
+                <opt name="sacra" value="8">圣器</opt>
+                <opt name="face" value="9">脸型</opt>
+                <opt name="mineSkin" value="10">海岛皮肤</opt>
+                <opt name="pet" value="11">宠物</opt>
+            </combo>
+        </int>
+        <mediumtext name="list" type="number[]" title="图鉴列表"/>
+        <varchar name="spList" type="number[]" length="4096" title="特殊图鉴列表"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_wing" primary="uid">
+        <comment>玩家翅膀表</comment>
+        <int name="uid" title="用户uid"/>
+        <int name="tmpId" title="佩戴模板ID"/>
+        <int name="lvl" title="等级"/>
+        <int name="lvlExp" title="经验"/>
+        <int name="grade" title="阶级"/>
+        <varchar name="wingList" length="1024" type="number[]" title="已获得列表"/>
+        <varchar name="attr" length="256" type="any" title="属性"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+        <int name="enhanceLvl" default="0" title="强化等级"/>
+        <varchar name="enhanceAttr" length="256" type="any" title="强化属性"/>
+    </table>
+
+    <table name="g_ruf_base" primary="uid">
+        <comment>魔法阵系统表</comment>
+        <int name="uid" title="用户ID"/>
+        <int name="volume" title="格子数"/>
+        <varchar name="travelList" type="number[]" length="2048" title="探索列表"/>
+        <datetime name="travelTime" title="探索时间"/>
+        <int name="income" title="收益"/>
+        <int name="isInit" title="是否初始"/>
+        <int name="totGet" title="总计获得"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_ruf" primary="uid,msId">
+        <comment>魔法阵</comment>
+        <int name="uid" title="用户uid"/>
+        <int name="msId" title="msId"/>
+        <int name="tmpId" title="模板id"/>
+        <int name="lvl" title="等级"/>
+        <int name="grade" title="等阶"/>
+        <varchar name="spAttr" type="any" length="1024" title="特殊属性"/>
+        <int name="rollMainCount" title="进阶随到主属性的次数"/>
+        <varchar name="fuseAttr" length="1024" type="any[]" title="融合属性"/>
+        <int name="fuseCnt" title="融合次数"/>
+        <int name="beFuseCost" title="被融合法阵总消耗"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_honour" primary="uid">
+        <comment>玩家荣誉手册信息</comment>
+        <int name="uid" title="用户uid"/>
+        <int name="step" default="1" title="阶段"/>
+        <varchar name="progress" length="256" type="any" title="任务进度"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_title" primary="uid,tmpId">
+        <comment>玩家称号表</comment>
+        <int name="uid" title="用户uid"/>
+        <int name="tmpId" title="模板id"/>
+        <int name="lvl" title="等级"/>
+        <varchar name="attr" type="any" length="2048" title="属性"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_title_hist" primary="uid,msId">
+        <comment>玩家历史获得称号表</comment>
+        <int name="uid" title="用户uid"/>
+        <int name="msId" title="时间戳"/>
+        <int name="tmpId" title="模板id"/>
+        <int name="lvl" title="等级"/>
+        <varchar name="attr" type="any" length="2048" title="属性"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_gem" primary="uid,msId">
+        <comment>玩家宝石表</comment>
+        <int name="uid" title="用户uid"/>
+        <int name="msId" title="msId"/>
+        <int name="tmpId" title="模板ID"/>
+        <varchar name="attr" type="any" length="1024" title="属性"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_gem_paper" primary="uid">
+        <comment>玩家宝石图纸信息表</comment>
+        <int name="uid" title="用户uid"/>
+        <varchar name="paperList" length="512" type="number[]" title="已获得图纸列表"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_gem_scheme" primary="uid,sNo">
+        <comment>玩家宝石主题方案表</comment>
+        <int name="uid" title="用户uid"/>
+        <int name="sNo" title="方案编号ID"/>
+        <varchar name="name" length="32" title="方案名字"/>
+        <int name="paperId" title="图纸ID"/>
+        <varchar name="inlayList" length="512" type="number[]" title="镶嵌列表"/>
+        <varchar name="gemIdList" length="512" type="number[]" title="宝石列表(模板ID)"/>
+        <varchar name="attr" type="any" length="1024" title="属性"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_sacra" primary="uid,tmpId">
+        <comment>玩家圣器信息表</comment>
+        <int name="uid" title="用户uid"/>
+        <int name="tmpId" title="模板id"/>
+        <int name="lvl" title="等级"/>
+        <varchar name="attr" type="any" length="2048" title="属性"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_sacra_draw_log" primary="uid,msId">
+        <comment>玩家圣器抽奖日志信息表</comment>
+        <int name="uid" title="用户uid"/>
+        <int name="msId" title="msId"/>
+        <int name="tmpId" title="圣器抽奖表ID"/>
+        <varchar name="items" length="256" type="number[][]" title="道具列表[[圣器碎片ID,奖券数量],....]"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_lucky_laba" primary="uid">
+        <comment>寻宝拉霸机玩家信息</comment>
+        <int name="uid" title="用户uid"/>
+        <int name="nextMulti" title="下次抽奖倍数"/>
+        <varchar name="selectItems" length="256" type="any" title="自选道具{id:num}"/>
+        <int name="freeDraw" title="免费抽奖次数"/>
+        <int name="tdyDraw" title="今日抽奖"/>
+        <int name="totDraw" title="累计抽奖"/>
+        <datetime name="rTime" title="更新时间"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_lucky_laba_draw_log" primary="uid,msId">
+        <comment>玩家寻宝拉霸机抽奖日志信息表</comment>
+        <int name="uid" title="用户uid"/>
+        <int name="msId" title="msId"/>
+        <int name="tmpId" title="拉霸表ID"/>
+        <int name="rwdType" title="奖励类型">
+            <combo>
+                <opt name="nor" value="0">常规</opt>
+                <opt name="select" value="1">自选</opt>
+                <opt name="double" value="2">翻倍</opt>
+                <opt name="free" value="免费次数">常规</opt>
+            </combo>
+        </int>
+        <varchar name="items" length="256" type="any" title="道具列表"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_mine" primary="uid" keys="totColCnt">
+        <comment>矿场信息表</comment>
+        <int name="uid" title="用户uid"/>
+        <varchar name="uName" length="32" title="用户名字"/>
+        <varchar name="uIco" length="512" title="用户头像"/>
+        <int name="lvl" title="矿场等级"/>
+        <int name="holeLvl" title="矿洞等级"/>
+        <int name="holeCnt" title="矿洞数量"/>
+        <int name="mood" title="哥布林心情值"/>
+        <int name="totMiner" title="哥布林总数"/>
+        <varchar name="employMiners" length="1024" type="any" title="雇佣哥布林信息"/>
+        <varchar name="rhGNoList" length="1024" type="any[]" title="掠夺的矿产编号列表"/>
+        <varchar name="goodsList" length="2" type="any[]" title="矿产列表"/>
+        <varchar name="rhRNoList" length="1024" type="any[]" title="掠夺的矿石编号列表"/>
+        <varchar name="rockList" length="2" type="any[]" title="矿石列表"/>
+        <varchar name="idxList" length="2" type="number[]" title="索引ID列表"/>
+        <int name="nearWgt" title="附近的人权重"/>
+        <varchar name="nearUids" length="1024" type="number[]" title="上一次附近的玩家列表"/>
+        <datetime name="rNearTime" title="刷新附近矿场时间,r=refresh"/>
+        <datetime name="gOverTime" title="保护罩的过期时间,g=guard"/>
+        <text name="deportSucMap" type="any" title="驱逐成功的时间，以uid为key"/>
+        <text name="deportFailMap" type="any" title="驱逐失败的时间，以uid为key"/>
+        <datetime name="nLogTime" title="产生日志的时间"/>
+        <datetime name="oLogTime" title="阅读日志的时间"/>
+        <int name="totColCnt" title="总采集次数"/>
+        <int name="totRobCnt" title="总掠夺次数"/>
+        <int name="beRobCnt" title="被掠夺次数"/>
+        <int name="tdyPullCnt" title="今日拉取次数(采集和掠夺)"/>
+        <varchar name="verifyReqId" length="128" title="验证请求参数,有则表示需要验证"/>
+        <int name="verifyFailCnt" title="验证失败次数"/>
+        <datetime name="verifyFailTime" title="验证失败时间"/>
+        <datetime name="verifyTime" title="验证时间"/>
+        <int name="yesMood" title="昨日心情值"/>
+        <int name="skinId" type="number" title="海岛皮肤"/>
+        <int name="minerSkinId" type="number" title="哥布林皮肤"/>
+        <varchar name="attr" type="any" length="2048" title="属性"/>
+        <datetime name="rTime" title="刷新时间"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_mine_goods" primary="goodsNo" keys="uid;isPreEnd;opTime" uk="true">
+        <comment>矿场矿产信息表</comment>
+        <varchar name="goodsNo" length="64" title="矿产编号"/>
+        <int name="tmpId" title="矿产模板ID"/>
+        <int name="uid" title="用户uid"/>
+        <int name="idx" title="索引位置"/>
+        <int name="pos" title="当前位置"/>
+        <int name="dist" title="总距离[方便查看]"/>
+        <datetime name="opTime" title="操作时间"/>
+        <varchar name="collect" length="2048" type="any" title="采集信息"/>
+        <varchar name="rob" length="2048" type="any" title="掠夺信息"/>
+        <int name="isPreEnd" title="是否预结算，为1表示预结算则会重新刷出矿产"/>
+        <int name="status" title="状态，由矿产拥有者设置"/>
+        <int name="isBeRob" title="是否被掠夺"/>
+        <int name="skinId" title="海岛皮肤"/>
+        <datetime name="recvTime" title="领取时间"/>
+        <datetime name="eTime" title="结束时间"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_mine_rock" primary="rockNo" keys="uid;status;isOper;eTime" uk="true">
+        <comment>矿洞矿石信息表</comment>
+        <varchar name="rockNo" length="64" title="矿石编号"/>
+        <int name="uid" title="用户uid"/>
+        <int name="idx" title="索引位置"/>
+        <int name="lvl" title="矿石等级"/>
+        <int name="amount" title="当前数量"/>
+        <int name="totAmount" title="总数量"/>
+        <int name="isOper" title="是否开采中"/>
+        <varchar name="collect" length="2048" type="any" title="开采信息"/>
+        <varchar name="rob" length="2048" type="any" title="掠夺信息"/>
+        <int name="status" title="矿石状态"/>
+        <int name="isRecv" title="是否已领,拥有者设置"/>
+        <datetime name="recvTime" title="领取时间"/>
+        <int name="isEnd" title="是否结束"/>
+        <int name="skinId" title="海岛皮肤"/>
+        <datetime name="eTime" title="结束时间"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_mine_income" primary="uid,msId">
+        <comment>海岛矿石被驱逐海岛币收益</comment>
+        <int name="uid" title="玩家ID"/>
+        <int name="msId" title="时间戳"/>
+        <int name="bUid" title="被抢玩家ID"/>
+        <int name="income" title="当前收益"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_mine_enemy" primary="uid,eUid" keys="uTime">
+        <comment>矿场仇人信息</comment>
+        <int name="uid" title="用户uid"/>
+        <int name="eUid" title="仇人uid"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_mine_log" primary="uid,msId" keys="cTime">
+        <comment>矿场日志信息</comment>
+        <int name="uid" title="用户uid"/>
+        <int name="msId" title="msId"/>
+        <int name="diaryId" title="日志表ID"/>
+        <varchar name="data" type="any" length="1024" title="数据参数"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_mine_skin" primary="uid,tmpId">
+        <comment>玩家海岛皮肤信息表，单独一张表，后续如果升级，限时好处理</comment>
+        <int name="uid" title="用户ID"/>
+        <int name="tmpId" title="皮肤ID"/>
+        <int name="lvl" title="等级"/>
+        <varchar name="attr" type="any" length="2048" title="属性"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_subscribe" primary="uid,type" uk="true">
+        <comment>玩家订阅信息表</comment>
+        <int name="uid" title="用户uid"/>
+        <int name="type" title="类型">
+            <combo>
+                <opt name="nextLogin" value="1">次日登录</opt>
+                <opt name="verUpdate" value="2">版本更新</opt>
+                <opt name="mineBrush" value="3">3级以上矿产刷出</opt>
+                <opt name="mineBeRob" value="4">矿产被掠夺</opt>
+                <opt name="robMineBeBack" value="5">掠夺矿产被抵抗</opt>
+                <opt name="equipBoxUpEnd" value="6">卡牌升级完成</opt>
+                <opt name="rufIncomeFull" value="7">魔法阵晶石已满</opt>
+                <opt name="runePowerFull" value="8">符石体力恢复已满</opt>
+                <opt name="arenaBeChallenge" value="9">竞技场被挑战</opt>
+                <opt name="fmlCopyOpen" value="10">公会副本开启</opt>
+                <opt name="arenaWillEnd" value="11">决斗场即将结榜</opt>
+                <opt name="listWillEnd" value="12">冲榜即将结榜</opt>
+                <opt name="towerWillEnd" value="13">试炼即将结榜</opt>
+                <opt name="mazeOpen" value="14">迷宫即将开启</opt>
+                <opt name="mazePowerFull" value="15">迷宫体力恢复已满</opt>
+                <opt name="mazeWillEnd" value="16">迷宫即将结榜</opt>
+                <opt name="actWillEnd" value="17">玩法类活动即将结榜</opt>
+                <opt name="ruinAutoEnd" value="18">遗迹守护自动结束时</opt>
+                <opt name="ruinBeExpel" value="19">遗迹守护被驱逐</opt>
+                <opt name="ruinBeRob" value="20">遗迹守护被掠夺</opt>
+                <opt name="mineRockBrush" value="21">矿洞3级以上矿石刷新</opt>
+                <opt name="mineRockBeRob" value="22">矿石被掠夺</opt>
+                <opt name="mineRockBeDeport" value="23">矿洞掠夺被驱逐时</opt>
+                <opt name="mineGuardEnd" value="24">保护罩到期时</opt>
+                <opt name="frdApply" value="25">好友申请</opt>
+                <opt name="frdCall" value="26">好友唤醒</opt>
+            </combo>
+        </int>
+        <int name="subscribeNum" title="订阅次数"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_subscribe_job" primary="uid,type" keys="pTime">
+        <comment>订阅待推送表</comment>
+        <int name="uid" title="玩家ID"/>
+        <int name="chnId" title="渠道ID"/>
+        <varchar name="openId" length="64" title="开放者ID"/>
+        <int name="type" title="订阅类型"/>
+        <varchar name="param" length="256" type="any" title="订阅参数"/>
+        <datetime name="pTime" title="推送时间"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_msg_notify_job" primary="uid,type" keys="pTime">
+        <comment>消息待推送表</comment>
+        <int name="uid" title="玩家ID"/>
+        <int name="chnId" title="渠道ID"/>
+        <varchar name="openId" length="64" title="开放者ID"/>
+        <varchar name="lang" length="16" title="玩家语言"/>
+        <int name="type" title="推送类型">
+            <combo>
+                <opt name="nextLogin" value="1">次日登录</opt>
+                <opt name="verUpdate" value="2">版本更新</opt>
+                <opt name="mineBrush" value="3">3级以上矿产刷出</opt>
+                <opt name="mineBeRob" value="4">矿产被掠夺</opt>
+                <opt name="robMineBeBack" value="5">掠夺矿产被抵抗</opt>
+                <opt name="equipBoxUpEnd" value="6">卡牌升级完成</opt>
+                <opt name="rufIncomeFull" value="7">魔法阵晶石已满</opt>
+                <opt name="runePowerFull" value="8">符石体力恢复已满</opt>
+                <opt name="arenaBeChallenge" value="9">竞技场被挑战</opt>
+                <opt name="fmlCopyOpen" value="10">公会副本开启</opt>
+                <opt name="arenaWillEnd" value="11">决斗场即将结榜</opt>
+                <opt name="listWillEnd" value="12">冲榜即将结榜</opt>
+                <opt name="towerWillEnd" value="13">试炼即将结榜</opt>
+                <opt name="mazeOpen" value="14">迷宫即将开启</opt>
+                <opt name="mazePowerFull" value="15">迷宫体力恢复已满</opt>
+                <opt name="mazeWillEnd" value="16">迷宫即将结榜</opt>
+                <opt name="actWillEnd" value="17">玩法类活动即将结榜</opt>
+                <opt name="ruinAutoEnd" value="18">遗迹守护自动结束时</opt>
+                <opt name="ruinBeExpel" value="19">遗迹守护被驱逐</opt>
+                <opt name="ruinBeRob" value="20">遗迹守护被掠夺</opt>
+                <opt name="mineRockBrush" value="21">矿洞3级以上矿石刷新</opt>
+                <opt name="mineRockBeRob" value="22">矿石被掠夺</opt>
+                <opt name="mineRockBeDeport" value="23">矿洞掠夺被驱逐时</opt>
+                <opt name="mineGuardEnd" value="24">保护罩到期时</opt>
+                <opt name="frdApply" value="25">好友申请</opt>
+                <opt name="frdCall" value="26">好友唤醒</opt>
+            </combo>
+        </int>
+        <varchar name="tmpName" length="64" title="模板名称"/>
+        <varchar name="param" length="256" type="any" title="订阅参数"/>
+        <datetime name="pTime" title="推送时间"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_chat_report" primary="uid">
+        <comment>聊天举报</comment>
+        <int name="uid" required="true" title="用户ID"/>
+        <text name="value" type="string" title="值"/>
+        <datetime name="uTime" title="举报时间"/>
+    </table>
+
+    <table name="g_ico_frm" primary="uid">
+        <comment>玩家头像框信息表</comment>
+        <int name="uid" required="true" title="用户ID"/>
+        <varchar name="icoFrmList" length="1024" type="string[]" title="历史激活头像框列表"/>
+        <varchar name="icoFrmMap" length="2048" type="any" title="激活头像框映射{头像框ID:等级}"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_bubble" primary="uid">
+        <comment>玩家气泡框信息表</comment>
+        <int name="uid" required="true" title="用户ID"/>
+        <varchar name="bubbleList" length="1024" type="number[]" title="历史激活聊天气泡框列表"/>
+        <varchar name="bubbleMap" length="2048" type="any" title="激活聊天气泡框映射{气泡框ID:等级}"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_task_main" primary="uid">
+        <comment>主线任务表</comment>
+        <int name="uid" title="玩家ID"/>
+        <varchar name="progress" length="1024" type="{[taskId:number]:number}" title="主线进度"/>
+        <text name="recvMap" type="{[taskId:number]:number}" title="领取结果"/>
+        <int name="ver" default="0" title="主线任务版本"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_task_dly" primary="uid">
+        <comment>日常任务表</comment>
+        <int name="uid" title="玩家ID"/>
+        <varchar name="progress" length="1024" type="{[bizType:number]:number}" title="日常进度"/>
+        <varchar name="recvMap" length="1024" type="{[bizType:number]:any}" title="领取结果"/>
+        <int name="vital" title="任务活跃值"/>
+        <varchar name="vitalBoxs" length="256" type="any[]" title="任务活跃值宝箱领取记录"/>
+        <text name="vitalGotMap" type="{[day:number]:number}" title="任务活跃值获得映射{YYYYMMDD:100}"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_task_ach" primary="uid">
+        <comment>成就任务表</comment>
+        <int name="uid" title="玩家ID"/>
+        <varchar name="progress" length="1024" type="{[bizType:number]:number}" title="成就进度"/>
+        <text name="recvMap" type="{[bizType:number]:any}" title="领取结果"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_task_inv" primary="uid">
+        <comment>投资任务表</comment>
+        <int name="uid" title="玩家ID"/>
+        <varchar name="progress" length="4096" type="{[type:number]:number}" title="投资进度"/>
+        <varchar name="recvMap" length="4096" type="{[taskId:number]:number}" title="领取结果"/>
+        <varchar name="payRecvMap" length="4096" type="{[taskId:number]:number}" title="付费领取结果"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_shop" primary="uid,type">
+        <comment>用户商店表</comment>
+        <int name="uid" title="玩家ID"/>
+        <int name="type" title="商店类型">
+            <combo>
+                <opt name="hot" value="1">热卖商店</opt>
+                <opt name="gld" value="2">金币商店</opt>
+                <opt name="gem" value="3">宝石商店</opt>
+                <opt name="ruf" value="4">法阵商店</opt>
+                <opt name="rune" value="5">符石商店</opt>
+                <opt name="skin" value="6">皮肤商店</opt>
+                <opt name="fmlCopy" value="7">商会商店</opt>
+                <opt name="tower" value="8">试炼商店</opt>
+                <opt name="maze" value="9">迷宫商店</opt>
+                <opt name="mine" value="10">海岛商店</opt>
+                <opt name="kingOrder" value="11">通行证商店</opt>
+                <opt name="rb" value="12">天梯商店</opt>
+                <opt name="pet" value="13">宠物商店</opt>
+            </combo>
+        </int>
+        <varchar name="items" length="2048" type="any[]" title="物品列表(部分商店的购买列表为服务端生成)"/>
+        <int name="itemRCnt" title="物品刷新次数"/>
+        <datetime name="itemRFTime" title="物品免费刷新时间"/>
+        <int name="itemRCnt_pro" title="物品刷新次数"/>
+        <datetime name="itemRFTime_pro" title="物品免费刷新时间"/>
+        <varchar name="buyRecord" length="2048" type="any" title="每日购买记录"/>
+        <varchar name="weekRecord" length="2048" type="any" title="每周购买记录"/>
+        <varchar name="monthRecord" length="2048" type="any" title="每月购买记录"/>
+        <varchar name="totRecord" length="2048" type="any" title="总计购买记录"/>
+        <int name="batchId" title="批次ID"/>
+        <varchar name="batchRecord" length="2048" type="any" title="批次购买记录"/>
+        <datetime name="rTime" title="刷新时间"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_rchg" primary="orderNo" keys="uid;uid_rid:uid,rid;reqTime;sendTime;">
+        <comment>玩家充值的发货信息</comment>
+        <varchar name="orderNo" length="128" title="游戏订单号"/>
+        <int name="uid">玩家ID</int>
+        <int name="rid" title="充值项ID"/>
+        <int name="rid_pay" title="实际充值项ID">目的是为了做折扣模式的时候，在实际支付是会切换为其他的充值项的需求</int>
+        <int name="cny" title="实际支付的cny值">在折扣模式下的时候，这个值会按照实际充值时候的折扣充值项的来走</int>
+        <varchar name="value" length="64">type指定模式下对应的值，例如type为活动类型，那么这个值表示的就是活动的id</varchar>
+        <varchar name="gain" length="128" type="any" title="获得的物品"/>
+        <int name="critType" title="暴击类型">
+            <comment>为了记录当前这是发货的时候的物品赠送类型是什么，方便跟踪而已，没有实际业务含义</comment>
+            <combo>
+                <opt name="normal" value="0">普通模式，对应items</opt>
+                <opt name="sf" value="1">当前充值项首充模式，对应sfItems</opt>
+                <opt name="gf" value="2">全局充值项首充模式，对应gfItems</opt>
+            </combo>
+        </int>
+        <datetime name="reqTime" title="用户拉起充值请求的时间"/>
+        <datetime name="sdkTime" title="cp接收到平台的支付回调的时间"/>
+        <datetime name="sendTime" title="游戏进行发货的时间"/>
+        <int name="sendYMD" title="发货日期YMD型">为了方便统计累天充值</int>
+    </table>
+
+    <table name="g_rchg_card" primary="uid,type" keys="uid;type">
+        <comment>特权卡</comment>
+        <int name="uid" title="玩家ID"/>
+        <int name="type" title="类型">复用g_rechg_req中的type中的card_xxx部分的类型</int>
+        <int name="isMain" title="是否已经充值过了主卡(永久卡)">
+            <combo>
+                <opt name="no" value="0">不是</opt>
+                <opt name="yes" value="1">是</opt>
+            </combo>
+        </int>
+        <text name="receiveList" type="any[]" title="领取记录列表">是一个数组格式，里面每个元素记录的是领取的时间点。如：["2016-06-01 10:00:00",1]</text>
+        <datetime name="receiveTime" title="最后一次领取时间"/>
+        <datetime name="invalidTime" title="充值卡到期时间"/>
+        <int name="isPay" default="1" title="是否充值获得">
+            <combo>
+                <opt name="no" value="0">免费途径获得</opt>
+                <opt name="yes" value="1">充值获得</opt>
+            </combo>
+        </int>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_rchg_day" primary="uid">
+        <comment>累天充值信息表</comment>
+        <int name="uid" title="玩家ID"/>
+        <int name="totDays" title="充值天数"/>
+        <text name="progress" type="any" title="领取进度"/>
+        <datetime name="sTime" title="开始时间"/>
+        <datetime name="eTime" title="结束时间"/>
+        <text name="rchgLog" type="string[]" title="充值天数列表"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_rchg_day_hist" primary="uid,msId">
+        <comment>累天充值信息表</comment>
+        <int name="uid" title="玩家ID"/>
+        <int name="msId" title="记录时间戳"/>
+        <int name="totDays" title="充值天数"/>
+        <text name="progress" type="any" title="领取进度"/>
+        <datetime name="sTime" title="开始时间"/>
+        <datetime name="eTime" title="结束时间"/>
+        <text name="rchgLog" type="string[]" title="充值天数列表"/>
+        <int name="isMail" title="是否已经发放邮件"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_rchg_pop_bag" primary="uid">
+        <comment>充值弹窗礼包信息表</comment>
+        <int name="uid" required="true" title="用户uid"/>
+        <text name="buyMap" type="any" title="礼包待购买记录"/>
+        <varchar name="pullBagList" length="1024" type="any[]" title="拉起礼包列表"/>
+        <datetime name="rTime" title="刷新时间"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_rchg_ext" primary="uid,type">
+        <comment>玩家充值扩展信息表</comment>
+        <int name="uid" title="玩家ID"/>
+        <int name="type" title="领取类型">
+            <combo>
+                <opt name="novice" value="1">新手礼包</opt>
+                <opt name="flashKill" value="2">秒杀礼包</opt>
+            </combo>
+        </int>
+        <varchar name="progress" length="2048" type="any" title="领取进度"/>
+        <varchar name="recvIds" length="256" type="number[]" title="已领取的ID列表"/>
+        <varchar name="ext" type="any" length="1024" title="拓展字段"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_mail" primary="uid,msId" keys="uid;msId;allId;dTime;isDel;isRead;isPick;">
+        <comment>邮件</comment>
+        <int name="uid" title="玩家ID"/>
+        <int name="msId" title="msId"/>
+        <int name="allId" title="g_mail_all的ID"/>
+        <int name="mode" title="模式">
+            <combo>
+                <opt name="xlsx" value="0">xlsx配置模式</opt>
+                <opt name="gm" value="1">gm配置模式</opt>
+            </combo>
+        </int>
+        <int name="tmpId" title="邮件模板ID"/>
+        <varchar name="tmpName" length="2" title="邮件名称"/>
+
+        <int name="chnId" title="玩家渠道id">0表示全渠道</int>
+        <int name="lvl" title="玩家等级"/>
+        <int name="vip" title="玩家vip等级"/>
+        <int name="osType" title="设备系统类型"/>
+        <int name="rtType" title="runtime类型"/>
+
+        <int name="readDelHours" title="阅读后几分钟删除"/>
+        <varchar name="param" type="any" length="512" title="参数"/>
+        <varchar name="items" type="any" length="512" title="物品"/>
+        <varchar name="tTitle" type="number[]" length="32" title="限时称号在邮件添加时实时保存到称号表中"/>
+
+        <datetime name="cTime" title="添加时间"/>
+        <datetime name="eTime" title="结束时间"/>
+
+        <int name="isDel" title="是否自己删除了邮件"/>
+        <int name="isRead" title="是否已读"/>
+        <int name="isOper" title="是否操作"/>
+        <int name="isPick" title="是否已领"/>
+        <datetime name="dTime" title="被玩家删除的时间"/>
+        <datetime name="rTime" title="邮件读取时间"/>
+        <datetime name="oTime" title="邮件操作时间">点击了详情按钮之类的</datetime>
+        <datetime name="pTime" title="附件领取时间"/>
+
+        <varchar name="read_st" length="32" title="阅读后存活时间, ST是Survival Time的缩写，意思是生存时间"/>
+        <varchar name="oper_st" length="32" title="操作后存活时间, ST是Survival Time的缩写，意思是生存时间"/>
+
+        <varchar name="ext" type="any" length="512" title="拓展字段"/>
+    </table>
+
+    <table name="g_fml" primary="id" uk="true" keys="status;name">
+        <comment>商会信息表，注：会长信息字段不存储具体值，fml表本身数据量少，多几个额外字段，避免要新建数据结构</comment>
+        <int name="id" auto="true" title="家族ID"/>
+        <int name="cuid" title="创建者的uid"/>
+        <int name="gsIdx" title="创建者对应的分服下标"/>
+        <varchar name="name" length="32" title="商会名称"/>
+        <varchar name="pwd" length="12" title="商会解散密码"/>
+        <varchar name="ico" length="32" title="商会旗帜"/>
+        <varchar name="iNotice" length="128" title="商会公告-对内"/>
+        <varchar name="oNotice" length="128" title="商会公告-对外"/>
+        <datetime name="cTime" title="创建时间"/>
+        <datetime name="dTime" title="解散时间"/>
+        <varchar name="joinCnd" length="128" title="加入条件">表达式：cnd|jsonStr</varchar>
+        <int name="autoJoin" title="是否允许申请自动加入">
+            <combo>
+                <opt name="disabled" value="0">不允许</opt>
+                <opt name="enabled" value="1">允许</opt>
+            </combo>
+        </int>
+        <int name="canSearch" title="是否允许搜索"/>
+        <int name="status" default="1" title="状态">
+            <combo>
+                <opt name="disabled" value="0">解散</opt>
+                <opt name="enabled" value="1">存在</opt>
+            </combo>
+        </int>
+        <int name="lvl" title="等级"/>
+        <int name="lvlExp" title="经验"/>
+        <int name="ctb" title="商会总贡献"/>
+        <int name="cmt" title="商会总属性"/>
+        <int name="mbCnt" title="成员人数"/>
+        <int name="active" title="商会7日活跃"/>
+        <int name="mstUid" title="会长id"/>
+        <varchar name="mstName" length="32" title="会长名字"/>
+        <int name="mstLvl" title="会长等级"/>
+        <varchar name="mstIco" length="32" title="会长头像"/>
+        <datetime name="bldTime" title="建设时间"/>
+        <varchar name="bldCountMap" length="512" type="any" title="每日建设次数映射">建设类型作为key</varchar>
+        <datetime name="chgMasterTime" title="手动转让会长CD时间"/>
+        <int name="needChgMaster" title="是否需要改变会长">
+            <common>由于族长可能很久没上线，需要更换族长，但是更换的目标都不满足条件，这时候会先打上这个标记，然后让成员登陆的时候进行判断，满足的话就自动转为族长。</common>
+            <combo>
+                <opt name="no" value="0">否</opt>
+                <opt name="yes" value="1">是</opt>
+            </combo>
+        </int>
+        <datetime name="hotRecTime" title="火热招募结束时间"/>
+        <int name="bossOpenNum" title="boss开启次数"/>
+        <datetime name="bossOpenTime" title="boss开启时间"/>
+        <int name="maxKilledCopyId" title="击败的最大副本ID"/>
+        <int name="isBan" default="0" title="是否处于封禁状态">
+            <combo>
+                <opt name="no" value="0">否</opt>
+                <opt name="yes" value="1">是</opt>
+            </combo>
+        </int>
+        <varchar name="ext" length="256" type="any" title="附加信息">临时字段避免建立过多的数据结构</varchar>
+        <datetime name="copyResetTime" title="自动开启副本重置时间"/>
+    </table>
+
+    <table name="g_fml_ext" primary="fid,k" keys="fid" uk="true" key-ignore="true" gen-types="server,gm">
+        <comment>家族拓展信息</comment>
+        <int name="fid" title="家族ID"/>
+        <varchar name="k" length="16" title="key"/>
+        <text name="v" type="any" title="value">
+            <common>格式是：{"v":....}</common>
+        </text>
+    </table>
+
+    <table name="g_fml_chg_hist" primary="fid,operUid,msId" keys="fid;cTime;fid_type_cTime:fid,type,cTime" gen-types="server,gm">
+        <comment>家族变更历史</comment>
+        <int name="fid" title="家族ID"/>
+        <int name="operUid" title="操作用户的uid"/>
+        <int name="msId" title="msId"/>
+        <varchar name="operUname" length="32" title="操作用户名字"/>
+        <int name="dstUid">被操作的目标用户的uid</int>
+        <varchar name="dstUname" length="32" title="被操作的目标用户名字"/>
+        <int name="type" title="变更类型">
+            <combo>
+                <opt name="create" value="0">创建</opt>
+                <opt name="dissolve" value="1">解散</opt>
+                <opt name="chgMaster" value="2">更换族长</opt>
+                <opt name="join" value="3">加入</opt>
+                <opt name="quit" value="4">退出</opt>
+                <opt name="kick" value="5">踢出</opt>
+                <opt name="chgPos" value="6">更改职位</opt>
+                <opt name="chgINotice" value="7">更改对内公告</opt>
+                <opt name="chgONotice" value="8">更改对外公告</opt>
+                <opt name="chgName" value="9">修改名称</opt>
+                <opt name="chgIco" value="10">修改图标</opt>
+                <opt name="chgJoinCnd" value="11">修改入盟条件</opt>
+                <opt name="bld" value="12">玩家建设</opt>
+                <opt name="upgrade" value="13">家族升级</opt>
+                <opt name="autoTrans" value="14">自动转让</opt>
+                <opt name="lift" value="15">自己解除职务</opt>
+                <opt name="openCopyByDmd" value="16">元宝开启秘境</opt>
+                <opt name="openCopyByCmt" value="17">贡献开启秘境</opt>
+                <opt name="openCopyLeave" value="23">秘境刑天逃跑</opt>
+                <opt name="flagPastDue" value="24">宗门限时图腾已过期，加成效果已失效</opt>
+                <opt name="autoDis" value="25">公会自动解散（工会只有会长一个人，多日未登录）</opt>
+            </combo>
+        </int>
+        <varchar name="data" type="any" length="512" title="数据参数">格式为{bldName:?, itemDesc:?, copyName:?...}</varchar>
+        <datetime name="cTime" title="记录时间"/>
+    </table>
+
+    <table name="g_fml_apply" primary="uid,msId" keys="uid;fid;operTime" uk="true">
+        <comment>家族申请</comment>
+        <int name="uid" title="玩家ID"/>
+        <int name="fid" title="家族ID"/>
+        <int name="msId" title="msId"/>
+        <int name="status" title="状态">
+            <combo>
+                <opt name="req" value="0">申请</opt>
+                <opt name="pass" value="1">通过</opt>
+                <opt name="refuse" value="2">拒绝</opt>
+                <opt name="discard" value="3">废弃</opt>
+            </combo>
+        </int>
+        <varchar name="reason" length="128" title="申请理由"/>
+        <int name="operUid" title="操作者的uid"/>
+        <datetime name="operTime" title="操作时间"/>
+    </table>
+
+    <table name="g_fml_mb" primary="uid" keys="fid" uk="true">
+        <comment>家族成员</comment>
+        <int name="uid" title="玩家ID"/>
+        <int name="fid" title="家族ID"/>
+        <int name="pos" title="职位">
+            <combo>
+                <opt name="master" value="1">族长</opt>
+                <opt name="fMaster" value="2">副族长</opt>
+                <opt name="elt" value="10">精英</opt>
+                <opt name="normal" value="90">普通成员</opt>
+            </combo>
+        </int>
+        <int name="ctb" title="个人贡献">用于家族商店相关物品的购买</int>
+        <int name="curCtb" title="当前家族贡献">对于当前的家族而言，重进其他家族的时候会清空掉</int>
+        <int name="tdyCtb" title="今日贡献">对于当前的家族而言，重进其他家族的时候会清空掉</int>
+        <datetime name="jTime" title="加入时间"/>
+        <int name="qType" title="退出类型">
+            <comment>主要是不同的退出类型，个人贡献的保留不同</comment>
+            <combo>
+                <opt name="none" value="0">无</opt>
+                <opt name="kick" value="1">踢出(包含解散)</opt>
+                <opt name="quit" value="2">退出(主动行为)</opt>
+                <opt name="autoDis" value="3">自动解散（家族只有会长一个人，多日未登录）</opt>
+            </combo>
+        </int>
+        <datetime name="qTime" title="退出时间"/>
+        <datetime name="bldTime" title="建设时间"/>
+        <varchar name="bldCountMap" length="512" type="any" title="每日建设次数映射">建设id作为key</varchar>
+        <int name="active" title="7日活跃值"/>
+    </table>
+
+    <table name="g_fml_copy" primary="fid,tmpId">
+        <comment>家族秘境</comment>
+        <int name="fid" title="家族ID"/>
+        <int name="tmpId" title="副本模板ID"/>
+        <int name="initHp" default="0" title="副本初始血量"/>
+        <int name="hp" default="0" title="副本血量"/>
+        <text name="hurtRecord" type="{[uid: number]: any}" title="伤害记录"/>
+        <text name="hurtRecord_last" type="{[uid: number]: any}" title="上次伤害记录"/>
+        <int name="status" default="0" title="副本状态">
+            <combo>
+                <opt name="normal" value="1">正常状态,需要判断能否开启</opt>
+                <opt name="opening" value="2">开启中</opt>
+                <opt name="death" value="3">已击败,即通关该副本</opt>
+            </combo>
+        </int>
+        <datetime name="openTime" title="开启时间"/>
+        <int name="isLast" title="是否是最后一个副本"/>
+        <varchar name="__uk" length="64" title="更新标识">用于判断是否更新成功</varchar>
+        <int name="isAuto" title="是否自动开启"/>
+    </table>
+
+    <table name="g_assist" primary="uid,type,day" keys="fid" uk="true">
+        <comment>协助表</comment>
+        <int name="uid" title="玩家ID"/>
+        <int name="type" title="类型"/>
+        <int name="day" title="日期(天)20220325"/>
+        <int name="fid" title="公会ID"/>
+        <varchar name="name" length="32" title="名称"/>
+        <varchar name="ico" length="512" title="头像"/>
+        <varchar name="assistInfoList" length="4096" type="number[][]" title="协助者信息"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_invite" primary="uid">
+        <comment>玩家邀请基础信息表</comment>
+        <int name="uid" title="玩家ID"/>
+        <int name="frdNum" title="邀请的好友人数"/>
+        <varchar name="recvFrdNum" length="4096" type="any" title="领取好友数量奖励映射"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_bless" primary="uid,type" uk="true">
+        <comment>祝福与诅咒</comment>
+        <int name="uid" title="玩家id"/>
+        <int name="type" title="祝福类型">
+            <combo>
+                <opt name="abuse" value="2">毒珠</opt>
+                <opt name="bless" value="1">祝福</opt>
+            </combo>
+        </int>
+        <int name="send" title="每天发送珠子数量"/>
+        <datetime name="sendTime" title="发送时间">与接受时间区分开来，发送是玩家行为，无需UK操作</datetime>
+        <int name="rec" title="每天接受珠子数量"/>
+        <int name="histRec" title="历史接受珠子数量"/>
+        <text name="pearlArr" type="any[]" title="受赠珠子列表"/>
+        <datetime name="recTime" title="接受时间">记录接受珠子的时间，涉及多人同时操作，需要UK处理</datetime>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_bless_hist" primary="uid,sUid,type,cDate" keys="uid;cTime">
+        <comment>祝福与诅咒历史记录</comment>
+        <int name="uid" title="玩家uid"/>
+        <int name="sUid" title="发送者uid"/>
+
+        <!--额外字段，避免额外结构 -->
+        <varchar name="name" length="32" title="昵称"/>
+        <varchar name="ico" length="512" title="我的头像"/>
+        <int name="lvl" title="身份等级"/>
+        <int name="vip" title="VIp等级"/>
+
+        <int name="type" title="祝福类型">
+            <combo>
+                <opt name="abuse" value="2">毒珠</opt>
+                <opt name="bless" value="1">祝福</opt>
+            </combo>
+        </int>
+        <int name="isEff" title="是否有效">
+            <combo>
+                <opt name="no" value="0">无效</opt>
+                <opt name="yes" value="1">有效</opt>
+            </combo>
+        </int>
+        <int name="cDate" title="当前日期[20201010]"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_act_rank" primary="uid,batchId,step" uk="true">
+        <comment>活动参与排行表</comment>g
+        <int name="uid" title="玩家ID"/>
+        <int name="batchId" title="批次ID"/>
+        <int name="step" title="批次阶段"/>
+        <int name="fmlId" title="商会ID"/>
+        <int name="fmlPos" title="商会职位"/>
+        <int name="rank" title="榜单排名"/>
+        <int name="rankValue" title="累计排行榜值"/>
+        <int name="isUsrRecv" title="是否已领取个人奖励"/>
+        <int name="isFmlRecv" title="是否已领取商会奖励"/>
+        <int name="isHide" title="是否隐藏排行"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_act_record" primary="uid,batchId" keys="batchId" uk="true">
+        <comment>用户的活动记录数据</comment>
+        <int name="uid" title="玩家ID"/>
+        <int name="batchId" title="活动批次ID"/>
+        <varchar name="bag" length="512" type="any" title="活动背包"/>
+
+        <int name="tdyCount" default="0" title="今日参与次数"/>
+        <int name="totCount" default="0" title="总计参与次数"/>
+        <int name="loginDays" title="活动期间登录天数"/>
+        <datetime name="lastResetTime" title="上次重置时间(一般用在任务监听，监听隔天变更)"/>
+
+        <text name="gamePro" type="any" title="小游戏进度"/>
+        <varchar name="drops" length="512" type="any" title="额外掉落信息"/>
+        <varchar name="reachRec" length="2048" type="any" title="达标领取记录"/>
+        <varchar name="giftBuy" length="2048" type="any" title="礼包购买记录"/>
+        <text name="taskRcd" type="any" title="活动任务记录"/>
+        <varchar name="exShopLog" length="2048" type="any" title="商店兑换记录"/>
+
+        <int name="totIntgr" default="0" title="活动积分"/>
+        <int name="hasBuy" title="是否已经购买"/>
+        <int name="allRecv" title="是否全部领取"/>
+
+        <datetime name="powerTime" title="体力结算时间"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_act_rwd" primary="uid,msId" keys="batchId">
+        <comment>活动物品获得信息</comment>
+        <int name="uid" title="玩家ID"/>
+        <int name="msId" title="获得时间戳"/>
+        <varchar name="name" length="32" title="玩家名字"/>
+        <int name="batchId" title="批次ID"/>
+        <int name="itemId" title="物品ID"/>
+        <int name="num" title="物品数量"/>
+        <int name="isTop" title="是否大奖"/>
+        <varchar name="ext" length="256" type="any" title="扩展信息"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_act_sum" primary="batchId" uk="true">
+        <comment>活动全局信息</comment>
+        <int name="batchId" title="批次ID"/>
+        <int name="totCount" title="全服累计值"/>
+        <int name="otherCount" title="全服其他值(活动自己定义)"/>
+        <text name="progress" type="any" title="全服进度"/>
+        <text name="content" type="any[]" title="全服内容"/>
+        <varchar name="ext" type="any" length="1024" title="扩展信息"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_act_memory_log" primary="mroomId,uid">
+        <comment>记忆大师 游戏日志</comment>
+        <int name="mroomId" title="游戏房间id"/>
+        <int name="uid" title="用户id"/>
+        <int name="round" title="几轮结束"/>
+        <int name="result" title="比赛结果"/>
+        <int name="type" title="类型">
+            <combo>
+                <opt name="robot" value="1">机器人</opt>
+                <opt name="player" value="2">玩家</opt>
+            </combo>
+        </int>
+        <int name="level" title="难度等级">
+            <combo>
+                <opt name="easy" value="1">容易</opt>
+                <opt name="hard" value="2">困难</opt>
+            </combo>
+        </int>
+        <int name="score" title="倍数"/>
+        <int name="matchsec" title="匹配秒数"/>
+        <int name="flipnum" title="成功翻牌个数"/>
+        <int name="myrank" title="我的排名"/>
+        <int name="enemyrank" title="对手排名"/>
+        <int name="enemyuid" title="对手uid"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_sign" primary="uid">
+        <comment>每日签到</comment>
+        <int name="uid" title="玩家ID"/>
+        <int name="totSign" title="总签到天数"/>
+        <int name="cycle" title="当前周期"/>
+        <int name="cycleMaxDay" title="当前周期内可签最大天数"/>
+        <int name="cycleFetchUp" title="当前周期内的可补签天数"/>
+        <varchar name="signRecord" length="128" type="number[]" title="签到记录[1,2,...]"/>
+        <datetime name="lTime" title="上次签到时间"/>
+        <varchar name="sevenRecord" length="128" type="number[]" title="七日签到记录[[1,2,...]]"/>
+        <datetime name="sevenLTime" title="上次七日签到时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_king_order" primary="uid,batchId" keys="uid">
+        <comment>战令活动系统</comment>
+        <int name="uid" title="用户ID"/>
+        <int name="batchId" title="批次ID"/>
+        <int name="week" title="当前周数"/>
+        <int name="buyLvl" title="购买的等级"/>
+        <int name="rchgLvl" title="充值的等级"/>
+        <int name="exp" title="密令任务经验"/>
+        <int name="lvl" title="密令等级=初始等级+购买等级+充值等级+任务等级"/>
+        <varchar name="freeRecv" length="2048" type="number[]" title="免费领取记录"/>
+        <varchar name="payRecv" length="2048" type="number[]" title="付费领取记录"/>
+        <text name="taskRcd" type="any" title="任务完成记录">{taskId:IActTaskDone}</text>
+        <int name="isBuy" title="是否已充值购买">
+            <combo>
+                <opt name="no" value="0">未充值购买</opt>
+                <opt name="yes" value="1">已充值购买</opt>
+            </combo>
+        </int>
+        <int name="loginDay" title="本期登录总天数"/>
+        <int name="allRecv" title="是否全部领取"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_copy" primary="uid">
+        <comment>关卡副本信息表</comment>
+        <int name="uid" title="玩家ID"/>
+        <int name="copyId" title="当前副本ID"/>
+        <int name="passCopyId" title="已通关副本ID"/>
+        <int name="chapterRwdId" title="要领取奖励的章节ID"/>
+        <datetime name="cTime" title="创建日期"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="fTime" title="创建日期"/>
+    </table>
+
+    <table name="g_copy_elite" primary="uid">
+        <comment>精英关卡</comment>
+        <int name="uid" title="玩家ID"/>
+        <int name="copyId" title="当前副本ID"/>
+        <int name="isPass" title="是否通关"/>
+        <int name="sweepCount" title="扫荡次数"/>
+        <datetime name="sweepTime" title="扫荡时间"/>
+        <datetime name="cTime" title="创建日期"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="fTime" title="创建日期"/>
+    </table>
+
+    <table name="g_copy_abyss" primary="uid,type">
+        <comment>深渊关卡</comment>
+        <int name="uid" title="玩家ID"/>
+        <int name="type" title="关卡类型">
+            <combo>
+                <opt name="suming" value="1">宿命</opt>
+                <opt name="wujin" value="2">无尽</opt>
+                <opt name="xuese" value="3">血色</opt>
+            </combo>
+        </int>
+        <int name="copyId" title="当前副本ID"/>
+        <datetime name="fTime" title="创建日期"/>
+        <datetime name="cTime" title="创建日期"/>
+        <datetime name="uTime" title="更新时间"/>
+    </table>
+
+    <table name="g_share" primary="uid,tmpId">
+        <comment>用户分享信息表</comment>
+        <int name="uid" title="用户uid"/>
+        <int name="tmpId" title="分享ID"/>
+        <int name="shareCnt" title="已分享次数"/>
+        <int name="recvCnt" title="已领取次数"/>
+        <datetime name="recvTime" title="领奖时间"/>
+        <int name="totCnt" title="总计分享次数"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_redeem_usr" entity="IRedeemUsr" primary="uid,useCode">
+        <comment>用户使用兑换码信息</comment>
+        <int name="uid" title="玩家ID"/>
+        <varchar name="useCode" length="32" title="使用的兑换码"/>
+        <datetime name="useTime" title="使用时间"/>
+    </table>
+
+    <table name="g_arena" primary="uid" keys="integral" uk="true">
+        <comment>竞技场表</comment>
+        <int name="uid" title="玩家ID"/>
+        <varchar name="name" length="32" title="名称"/>
+        <int name="lvl" title="玩家等级"/>
+        <text name="ico" title="头像ico"/>
+        <int name="titleId" title="称号"/>
+        <int name="integral" title="积分"/>
+        <int name="rank" title="排行" escape="true"/>
+        <varchar name="mateOpptUids" length="256" type="number[]" title="匹配到玩家id列表"/>
+        <varchar name="mateOpptList" length="4096" type="any[]" title="匹配到玩家竞技场数据列表"/>
+        <int name="dayRecieve" title="每日排行奖励领取"/>
+        <int name="dayRank" title="每日排行"/>
+        <int name="dayInt" title="每日结算积分"/>
+        <int name="weekRecieve" title="每周排行奖励领取"/>
+        <int name="weekRank" title="每周排行"/>
+        <int name="weekInt" title="每周结算积分"/>
+        <datetime name="sTime" title="积分变化时间"/>
+        <datetime name="pTime" title="保护时间"/>
+        <datetime name="rTime" title="刷新时间"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+        <datetime name="fTime" title="战斗时间"/>
+    </table>
+
+    <table name="g_arena_record" primary="uid,msId" keys="eUid">
+        <comment>竞技场战斗记录表</comment>
+        <int name="uid" title="用户ID"/>
+        <int name="msId" title="记录时间戳"/>
+        <varchar name="name" length="32" title="我的名称"/>
+        <int name="lvl" title="玩家等级"/>
+        <varchar name="ico" length="512" title="我的头像"/>
+        <int name="eUid" title="对手用户ID(战报上eUid其实是我的玩家ID)"/>
+        <varchar name="eName" length="32" title="对手名称"/>
+        <int name="eLvl" title="玩家等级"/>
+        <varchar name="eIco" length="512" title="对手头像"/>
+        <int name="isWin" title="是否胜利"/>
+        <int name="intChg" title="积分变化"/>
+        <int name="eIntChg" title="对方积分变化"/>
+        <int name="isRevenge" title="是否已经复仇"/>
+        <int name="fightType" title="战斗类型">
+            <combo>
+                <opt name="match" value="1">匹配</opt>
+                <opt name="revenge" value="2">复仇</opt>
+            </combo>
+        </int>
+        <datetime name="cTime" title="创建时间"/>
+        <datetime name="uTime" title="更新时间"/>
+        <text name="fightResult" type="any" title="战斗数据"/>
+    </table>
+
+    <table name="g_arena_weekhis" primary="uid,batchId">
+        <comment>竞技场战斗每周结算超过1600积分用户</comment>
+        <int name="uid" title="用户ID"/>
+        <int name="batchId" title="批次ID,即每周天的时间YYDDSS"/>
+        <int name="weekInt" title="每周结算积分"/>
+        <datetime name="uTime" title="创建时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_tower" primary="uid" keys="isHide;histFloor;histMs">
+        <comment>玩家试炼信息表</comment>
+        <int name="uid" title="用户ID"/>
+        <int name="curFloor" title="当前楼层ID"/>
+        <int name="histFloor" title="本周最高楼层ID"/>
+        <int name="histMs" title="本周最高楼层达成时间戳"/>
+        <int name="monsterId" title="当前怪物ID"/>
+        <int name="volume" title="格子数"/>
+        <varchar name="randList" length="128" type="number[]" title="随机道具列表"/>
+        <varchar name="equipList" length="256" type="number[][]" title="装备背包列表"/>
+        <varchar name="attr" length="512" type="any" title="属性加成"/>
+        <int name="rank" title="排名"/>
+        <int name="histFloor_back" title="上周最高楼层ID"/>
+        <datetime name="fTime" title="战斗时间"/>
+        <int name="isFast" title="是否快速挑战过"/>
+        <int name="isReset" title="是否重置过"/>
+        <int name="equipFloor" title="已选择装备的楼层"/>
+        <int name="histBestFloor" title="历史最高楼层ID"/>
+        <int name="isHide" title="是否隐藏排行"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_tower_hist_top20" primary="uid,batchId">
+        <comment>试炼排行历史top20名</comment>
+        <int name="uid" title="用户ID"/>
+        <int name="batchId" title="批次ID,即每周天的时间"/>
+        <int name="rank" title="排名"/>
+        <int name="rankValue" title="排行榜值"/>
+        <datetime name="uTime" title="创建时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_rune_base" primary="uid">
+        <comment>符石系统表</comment>
+        <int name="uid" title="用户ID"/>
+        <int name="power" title="体力"/>
+        <int name="curManual" title="当前手册id"/>
+        <varchar name="unlockManuals" length="1024" type="number[]" title="解锁手册列表"/>
+        <text name="handbook" type="{[runeId:number]:any}" title="符石图鉴"/>
+        <varchar name="bookAttr" length="1024" type="any" title="图鉴属性"/>
+        <varchar name="boxList" length="2048" type="number[][]" title="符石库(废弃)"/>
+        <varchar name="boxAttr" length="1024" type="any" title="符石库属性"/>
+        <varchar name="altarAttr" length="1024" type="any" title="祭坛属性"/>
+        <datetime name="powerTime" title="体力结算时间"/>
+        <datetime name="callTime" title="召唤符石时间"/>
+        <int name="usedPower" title="使用的体力"/>
+        <varchar name="elvesMap" length="2048" type="{[runeId:number]:any}" title="元素精灵map"/>
+        <varchar name="elvesAttr" length="1024" type="any" title="元素精灵属性"/>
+        <varchar name="planList" length="64" type="number[]" title="符石板方案列表"/>
+        <varchar name="planInfoList" length="1024" type="any[]" title="符石板方案列表信息"/>
+        <datetime name="sTime" title="符石开始时间"/>
+        <datetime name="uTime" title="创建时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_rune_part" primary="uid,partId">
+        <comment>符石祭坛部位表</comment>
+        <int name="uid" title="用户ID"/>
+        <int name="partId" title="祭坛部位id"/>
+        <int name="lvl" type="number" title="部位等级"/>
+        <int name="grade" type="number" title="部位品阶"/>
+        <varchar name="baseAttr" length="256" type="any" title="部位基础属性"/>
+        <varchar name="extAttrList" length="256" type="any[]" title="部位附灵属性列表"/>
+        <varchar name="tempAttrList" length="256" type="any[]" title="临时附灵属性列表"/>
+        <varchar name="attrs" length="256" type="any" title="建筑属性"/>
+        <datetime name="uTime" title="创建时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_rune" primary="uid,msId">
+        <comment>符石表</comment>
+        <int name="uid" title="用户ID"/>
+        <int name="msId" title="符石id"/>
+        <int name="tmpId" title="模板id"/>
+        <int name="score" title="符石评分"/>
+        <int name="isInBox" title="是否放进符石库"/>
+        <int name="isNew" title="是否新获得"/>
+        <int name="isBest" title="是否是最高纪录"/>
+        <varchar name="attr" length="512" type="any" title="属性加成"/>
+        <int name="plan" title="方案"/>
+    </table>
+
+    <table name="g_rune_rcd" primary="uid,msId">
+        <comment>符石获得记录表</comment>
+        <int name="uid" title="用户ID"/>
+        <int name="msId" title="符石id"/>
+        <int name="tmpId" title="模板id"/>
+        <int name="score" title="符石评分"/>
+        <varchar name="attr" length="512" type="any" title="属性加成"/>
+    </table>
+
+    <table name="g_rune_task" primary="uid">
+        <comment>符石任务表</comment>
+        <int name="uid" title="用户ID"/>
+        <varchar name="progress" length="4096" type="{[taskId:number]:number}" title="解锁任务进度"/>
+        <varchar name="orders" length="1024" type="any[]" title="每日订单列表"/>
+        <text name="openLTasks" type="{[taskId:number]:any}" title="开服限时任务成就"/>
+        <varchar name="openGifts" length="2048" type="any" title="开服礼包购买记录"/>
+        <datetime name="rTime" title="更新时间"/>
+        <datetime name="uTime" title="创建时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_attr_chg" primary="uid,msId">
+        <comment>属性变化记录表</comment>
+        <int name="uid" title="用户ID"/>
+        <int name="msId" title="时间戳"/>
+        <varchar name="ifaceName" length="128" type="string" title="相关接口"/>
+        <varchar name="ifaceArgs" length="1024" type="any" title="接口相关参数"/>
+        <varchar name="beforeAttr" length="4096" type="{[attrId:number]:number}" title="变化前属性"/>
+        <varchar name="afterAttr" length="4096" type="{[attrId:number]:number}" title="变化后属性"/>
+        <varchar name="deltaAttr" length="4096" type="{[attrId:number]:number}" title="属性变化"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_maze_usr" primary="uid" keys="floor;isHide;reset;score">
+        <comment>迷宫玩家数据表</comment>
+        <int name="uid" title="用户ID"/>
+        <int name="power" title="体力"/>
+        <datetime name="powerTime" title="体力回复时间"/>
+        <int name="powerItemNum" title="体力道具数量"/>
+        <int name="floor" title="层数"/>
+        <varchar name="pos" length="32" type="number[]" title="任务位置"/>
+        <text name="mapInfo" type="any[][]" title="地图"/>
+        <int name="score" title="积分"/>
+        <int name="unLockNum" title="解锁数量"/>
+        <varchar name="unLockEventList" length="2048" type="number[]" title="已解锁的事件列表"/>
+        <int name="reset" title="是否需要重置"/>
+        <int name="isKilledBoss" title="是否击杀boss"/>
+        <int name="lastRank" title="上期排行"/>
+        <varchar name="unKilledUids" length="1024" type="number[]" title="未击杀的玩家列表"/>
+        <int name="histBestFloor" title="历史最高层数"/>
+        <int name="goldBoxNum" title="金宝箱数量"/>
+        <int name="silverBoxNum" title="银宝箱数量"/>
+        <datetime name="sTime" title="积分变更时间"/>
+        <int name="isHide" title="是否隐藏排行"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_maze_rcd" primary="uid,msId">
+        <comment>迷宫事件记录表</comment>
+        <int name="uid" title="用户ID"/>
+        <int name="msId" title="时间戳"/>
+        <int name="type" title="类型"/>
+        <varchar name="content" length="1024" type="any" title="内容"/>
+    </table>
+
+    <table name="g_god_imprint" primary="uid,tmpId">
+        <comment>玩家神印信息表</comment>
+        <int name="uid" title="用户ID"/>
+        <int name="tmpId" title="神印ID"/>
+        <int name="lvl" title="等级"/>
+        <varchar name="skills" length="512" type="any" title="技能">格式:{id:lvl,...}</varchar>
+        <varchar name="attr" type="any" length="2048" title="属性"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_pet_base" primary="uid">
+        <comment>宠物系统表</comment>
+        <int name="uid" title="用户ID"/>
+        <text name="handbook" type="any" title="宠物图鉴"/>
+        <int name="freeLasso" title="免费套索"/>
+        <datetime name="rTime" title="刷新时间"/>
+        <datetime name="uTime" title="创建时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_pet" primary="uid,msId">
+        <comment>玩家宠物信息</comment>
+        <int name="uid" title="用户uid"/>
+        <int name="msId" title="msId"/>
+        <int name="tmpId" title="模板id"/>
+        <int name="lvl" title="等级"/>
+        <int name="star" title="星级"/>
+        <int name="talentId" title="天赋ID"/>
+        <varchar name="attr" type="any" length="1024" title="属性"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_rb_per" primary="uid">
+        <comment>天梯排位赛个人信息</comment>
+        <int name="uid" title="玩家ID"/>
+        <int name="ecycId" title="每周周期ID"/>
+        <int name="intgr" title="段位积分"/>
+        <int name="tdyBattleCnt" title="今日排位赛已挑战次数"/>
+        <int name="tdyBuyCnt" title="今日排位赛已购买次数"/>
+        <int name="tdyTopBattleCnt" title="今日天梯赛已挑战次数"/>
+        <int name="tdyBuyTopCnt" title="今日购买天梯赛次数"/>
+        <int name="matchUid" title="匹配的玩家id"/>
+        <int name="matchIntgr" title="匹配的玩家积分"/>
+        <text name="matchUsrDisplay" type="any" title="匹配的玩家战斗数据"/>
+        <text name="matchUsrDetail" type="any" title="匹配的玩家详情"/>
+        <datetime name="fTime" title="战斗时间"/>
+        <datetime name="failTime" title="战斗失败时间"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+        <int name="lastChallengeNum" default="0">可找回挑战总次数</int>
+        <int name="findChallengeNum" default="0">已找回挑战次数</int>
+    </table>
+
+    <table name="g_rb_log" primary="ecycId,grpId,msgType,cTime">
+        <comment>天梯排位赛之区服日志信息表</comment>
+        <int name="ecycId" title="周期ID"/>
+        <int name="grpId" title="区服ID(避免合服时冲突)"/>
+        <varchar name="msgType" length="20" title="消息类型"/>
+        <int name="opType" title="操作类型">
+            <combo>
+                <opt name="auto" value="0">定时自动</opt>
+                <opt name="gm" value="1">GM执行</opt>
+            </combo>
+        </int>
+        <int name="day" title="记录日期YYYYMMDD"/>
+        <varchar name="ext" length="1024" type="any" title="扩展信息"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_act_peak_bet" primary="uid,prId" keys="idx_bid_uid_rid:batchId,uid,round;idx_bid_recv:batchId,recv">
+        <comment>巅峰赛竞猜记录表</comment>
+        <int name="uid" title="玩家ID"/>
+        <int name="prId" title="回合表ID">巅峰赛淘汰赛回合表的id</int>
+        <int name="batchId" title="活动批次"/>
+        <int name="groupId" title="淘汰赛分组"/>
+        <int name="round" title="几轮竞猜,DS_V.ICPeakRound.round"/>
+        <int name="betOnUid" title="下注玩家ID"/>
+        <varchar name="betOnName" length="32" title="下注玩家名字"/>
+        <int name="ticket" title="花费奖券数量"/>
+        <int name="recv" title="领取奖励类型">
+            <combo>
+                <opt name="none" value="0">未处理</opt>
+                <opt name="recvWin" value="1">已发获胜奖励</opt>
+                <opt name="recvLose" value="2">已发失败奖励</opt>
+            </combo>
+        </int>
+        <int name="score" title="获得的积分">只有玩家领取后，才会有值</int>
+        <int name="isRead" title="是否已读"></int>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+</ds>

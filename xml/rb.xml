@@ -1,0 +1,96 @@
+<ds namespace="H" database="rb">
+    <table name="g_c_rb_active" primary="grpId">
+        <comment>天梯排位赛区服参数人数记录，每周六4点刷新</comment>
+        <int name="grpId" title="区服全ID"/>
+        <int name="activeNum" title="活跃数"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_c_rb_usr" primary="uid">
+        <comment>跨服-天梯排位赛玩家信息表</comment>
+        <int name="uid" title="玩家ID"/>
+        <int name="roomId" title="跨服分组ID"/>
+        <int name="gsIdx" title="所在分服"/>
+        <varchar name="name" length="16" title="玩家名称"/>
+        <int name="lvl" title="等级"/>
+        <varchar name="ico" length="512" title="头像"/>
+        <int name="fmlId" title="公会id"/>
+        <varchar name="fmlName" length="32" title="公会名"/>
+        <int name="rank" title="玩家排名"/>
+        <int name="intgr" title="本轮积分"/>
+        <int name="lastIntgr" title="上次积分">排位赛结束后，同步该值为intgr，因为周六会清空intgr，保留积分，方便查询</int>
+        <int name="totIntgr" title="玩家总积分"/>
+        <datetime name="fTime" title="最近一次战斗时间"/>
+        <int name="inTopCnt" title="晋级云巅王者赛次数"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_c_rb_final" primary="ecycId,roomId,uid">
+        <comment>跨服-参加天梯排位赛的玩家列表，保留几期</comment>
+        <int name="ecycId" title="参与周期ID"/>
+        <int name="roomId" title="跨服分组ID"/>
+        <int name="uid" title="玩家ID"/>
+        <int name="rank" title="天梯赛排名"/>
+        <int name="intgr" title="排位赛积分"/>
+        <int name="gsIdx" title="所在分服"/>
+        <varchar name="name" length="16" title="玩家名称"/>
+        <int name="lvl" title="等级"/>
+        <varchar name="ico" length="512" title="头像"/>
+        <int name="fmlId" title="公会id"/>
+        <varchar name="fmlName" length="32" title="公会名"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_c_rb_record" primary="id" keys="uid;eUid;cTime">
+        <comment>跨服-天梯排位赛战斗记录</comment>
+        <int name="id" auto="true" title="主键ID"/>
+        <int name="uid" title="玩家ID"/>
+        <varchar name="name" length="32" title="玩家名称"/>
+        <varchar name="ico" length="512" title="玩家头像"/>
+        <int name="newRank" title="玩家新排名"/>
+        <int name="eUid" title="对手用户ID"/>
+        <varchar name="eName" length="32" title="对手名称"/>
+        <varchar name="eIco" length="512" title="对手头像"/>
+        <int name="eNewRank" title="对手新排名"/>
+        <int name="isWin" title="挑战是否成功"/>
+        <mediumtext name="record" type="any" title="战斗记录"/>
+        <varchar name="ext" length="256" type="any" title="额外数据"/>
+        <datetime name="cTime" title="创建时间"/>
+        <int name="isRead" default="0" title="是否阅读过"/>
+    </table>
+
+    <table name="g_c_rb_top" primary="ecycId,roomId,rank">
+        <comment>跨服-天梯排位赛每个分组每期排名前三的玩家</comment>
+        <int name="ecycId" title="参与周期ID"/>
+        <int name="roomId" title="跨服分组ID"/>
+        <int name="rank" title="玩家排名"/>
+        <int name="uid" title="玩家ID"/>
+        <varchar name="name" length="16" title="玩家名称"/>
+        <int name="gsIdx" title="所在分服"/>
+        <int name="lvl" title="等级"/>
+        <varchar name="ico" length="512" title="头像"/>
+        <int name="fmlId" title="公会id"/>
+        <varchar name="fmlName" length="32" title="公会名"/>
+        <varchar name="attr" type="any" length="2048" title="属性"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_c_rb_log" primary="ecycId,compId,msgType,cTime">
+        <comment>跨服-天梯排位赛之日志信息表</comment>
+        <int name="ecycId" title="周期ID"/>
+        <int name="compId" title="组件ID"/>
+        <varchar name="msgType" length="20" title="消息类型"/>
+        <int name="opType" title="操作类型">
+            <combo>
+                <opt name="auto" value="0">定时自动</opt>
+                <opt name="gm" value="1">GM执行</opt>
+            </combo>
+        </int>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+</ds>

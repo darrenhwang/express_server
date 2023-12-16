@@ -1,0 +1,247 @@
+<ds namespace="H" database="peak">
+    <table name="g_c_peak_room" primary="batchId,roomId" keys="step;status">
+        <comment>巅峰赛房间信息表</comment>
+        <int name="batchId" required="true" title="活动批次ID"/>
+        <int name="roomId" title="房间ID"/>
+        <int name="step" title="当前阶段">
+            <comment>当前所处的阶段</comment>
+            <combo>
+                <opt name="signUp" value="0">报名阶段</opt>
+                <opt name="select" value="1">海选阶段</opt>
+                <opt name="round" value="2">淘汰阶段</opt>
+                <opt name="end" value="3">活动结束</opt>
+            </combo>
+        </int>
+        <int name="status" title="房间状态">
+            <comment>表示已完成该状态:海选赛时表示进入第几组，淘汰赛时=轮数*10+局数</comment>
+            <combo>
+                <!-- 海选阶段 -->
+                <opt name="reg" value="0">报名阶段</opt>
+                <opt name="s01" value="1">海选第一组</opt>
+                <opt name="s02" value="2">海选第二组</opt>
+                <opt name="s03" value="3">海选第三组</opt>
+                <opt name="s04" value="4">海选第四组</opt>
+                <opt name="s05" value="5">海选第五组</opt>
+                <opt name="sEnd" value="10">海选赛已结束</opt>
+                <!-- 淘汰阶段 -->
+                <opt name="r11" value="11">第一场64强第一局</opt>
+                <opt name="r12" value="12">第一场64强第二局</opt>
+                <opt name="r13" value="13">第一场64强第三局</opt>
+                <opt name="r21" value="21">第二场32强第一局</opt>
+                <opt name="r22" value="22">第二场32强第二局</opt>
+                <opt name="r23" value="23">第二场32强第三局</opt>
+                <opt name="r31" value="31">第三场16强第一局</opt>
+                <opt name="r32" value="32">第三场16强第二局</opt>
+                <opt name="r33" value="33">第三场16强第三局</opt>
+                <opt name="r41" value="41">第四场8强第一局</opt>
+                <opt name="r42" value="42">第四场8强第二局</opt>
+                <opt name="r43" value="43">第四场8强第三局</opt>
+                <opt name="r51" value="51">第五场4强第一局</opt>
+                <opt name="r52" value="52">第五场4强第二局</opt>
+                <opt name="r53" value="53">第五场4强第三局</opt>
+                <opt name="r61" value="61">第六场2强第一局</opt>
+                <opt name="r62" value="62">第六场2强第二局</opt>
+                <opt name="r63" value="63">第六场2强第三局</opt>
+                <opt name="r71" value="71">第七场决赛第一局</opt>
+                <opt name="r72" value="72">第七场决赛第二局</opt>
+                <opt name="r73" value="73">第七场决赛第三局</opt>
+                <opt name="r74" value="74">第七场决赛第四局</opt>
+                <opt name="r75" value="75">第七场决赛第五局</opt>
+                <opt name="rEnd" value="80">淘汰赛已结束</opt>
+                <opt name="actEnd" value="100">活动结束</opt>
+            </combo>
+        </int>
+        <int name="selectNum" title="海选赛分组数量 3还是5"/>
+        <int name="roundNum" title="淘汰赛开启分组数量"/>
+        <int name="select1Num" title="第一组海选赛剩余人数"/>
+        <int name="select2Num" title="第二组海选赛剩余人数"/>
+        <int name="select3Num" title="第三组海选赛剩余人数"/>
+        <int name="select4Num" title="第四组海选赛剩余人数"/>
+        <int name="select5Num" title="第五组海选赛剩余人数"/>
+        <datetime name="select1Time" title="海选赛第一组的结算时间"/>
+        <datetime name="select2Time" title="海选赛第二组的结算时间"/>
+        <datetime name="select3Time" title="海选赛第三组的结算时间"/>
+        <datetime name="select4Time" title="海选赛第四组的结算时间"/>
+        <datetime name="select5Time" title="海选赛第五组的结算时间"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_c_peak_usr" primary="uid,batchId" keys="idx_bid_rid_gid_gsIdx:batchId,roomId,groupId,gsIdx;power;pos" uk="true">
+        <comment>巅峰赛玩家个人数据</comment>
+        <int name="uid" required="true" title="玩家ID"/>
+        <int name="batchId" title="活动批次"/>
+        <int name="roomId" title="房间ID"/>
+        <int name="gsIdx" title="所在分服ID"/>
+        <varchar name="name" length="32" title="玩家名字"/>
+        <int name="lvl" title="等级"/>
+        <int name="lvlExp" title="等级经验"/>
+        <varchar name="ico" length="512" title="头像"/>
+        <int name="fmlId" title="公会id"/>
+        <varchar name="fmlName" length="32" title="公会名"/>
+        <int name="groupId" default="0" title="淘汰赛分组">
+            <comment>淘汰赛的初始化分组,在海选中决出</comment>
+            <combo>
+                <opt name="none" value="0">无分组</opt>
+                <opt name="thetop" value="1">巅峰组</opt>
+                <opt name="heroes" value="2">精英组</opt>
+                <opt name="valiant" value="3">新秀组</opt>
+            </combo>
+        </int>
+        <int name="power" default="0" title="实力"/>
+        <int name="usePlan" type="number" title="当前使用的方案id"/>
+        <varchar name="planSet" length="64" type="number[]" title="使用的方案id列表"/>
+        <text name="planDetailMap" type="{[planId:number]:any}" title="方案详情map"/>
+        <text name="planDetailMap_bak" type="{[planId:number]:any}" title="方案详情map"/>
+        <varchar name="md5" length="32" title="Md5值,值一样不更新"/>
+        <int name="pos" title="淘汰赛坑位">根据规则生成1-128的数字</int>
+        <int name="round" default="0">
+            <comment>淘汰赛到第几轮，为0时如果对阵双方都为0则表示本轮比赛还未结束，如果本轮结束了则表示晋级下一轮，获得冠军则为r8</comment>
+            <combo>
+                <opt name="none" value="0">尚未结束或晋级下一轮</opt>
+                <opt name="r1" value="1">止步第一轮，128强</opt>
+                <opt name="r2" value="2">止步第二轮，64强</opt>
+                <opt name="r3" value="3">止步第三轮，32强</opt>
+                <opt name="r4" value="4">止步第四轮，16强</opt>
+                <opt name="r5" value="5">止步第五轮，8强</opt>
+                <opt name="r6" value="6">止步第六轮，4强</opt>
+                <opt name="r7" value="7">止步第七轮，2强</opt>
+                <opt name="r8" value="8">获得冠军</opt>
+            </combo>
+        </int>
+        <int name="hold" title="被拥护的次数"/>
+        <int name="bet" title="被竞猜的次数"/>
+        <int name="fail1Num" default="0" title="海选赛 第一组的失败次数"/>
+        <int name="fail2Num" default="0" title="海选赛 第二组的失败次数"/>
+        <int name="fail3Num" default="0" title="海选赛 第三组的失败次数"/>
+        <int name="fail4Num" default="0" title="海选赛 第四组的失败次数"/>
+        <int name="fail5Num" default="0" title="海选赛 第五组的失败次数"/>
+        <int name="select1FNum" default="0" title="海选赛 第一组的战斗次数"/>
+        <int name="select2FNum" default="0" title="海选赛 第二组的战斗次数"/>
+        <int name="select3FNum" default="0" title="海选赛 第三组的战斗次数"/>
+        <int name="select4FNum" default="0" title="海选赛 第四组的战斗次数"/>
+        <int name="select5FNum" default="0" title="海选赛 第五组的战斗次数"/>
+        <int name="isRecv" title="是否已领取排行奖励"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_c_peak_round" primary="id" keys="idx_bid_rid_gid_rid_idx:batchId,roomId,groupId,round,idx">
+        <comment>巅峰赛淘汰赛回合表</comment>
+        <int name="id" auto="true" title="主键序号"/>
+        <int name="batchId" required="true" title="批次ID"/>
+        <int name="roomId" title="房间ID"/>
+        <int name="groupId" default="0" title="淘汰赛分组">
+            <comment>淘汰赛的初始化分组,在海选中决出</comment>
+            <combo>
+                <opt name="none" value="0">无分组</opt>
+                <opt name="thetop" value="1">巅峰组</opt>
+                <opt name="heroes" value="2">精英组</opt>
+                <opt name="valiant" value="3">新秀组</opt>
+            </combo>
+        </int>
+        <int name="round" default="0">
+            <comment>淘汰赛到第几轮，为0时如果对阵双方都为0则表示本轮比赛还未结束，如果本轮结束了则表示晋级下一轮，获得冠军则为r8</comment>
+            <combo>
+                <opt name="r1" value="1">64强赛</opt>
+                <opt name="r2" value="2">32强赛</opt>
+                <opt name="r3" value="3">16强赛</opt>
+                <opt name="r4" value="4">8强赛</opt>
+                <opt name="r5" value="5">4强赛</opt>
+                <opt name="r6" value="6">半决赛</opt>
+                <opt name="r7" value="7">决赛</opt>
+            </combo>
+        </int>
+        <int name="aUid" title="A玩家ID"/>
+        <int name="aScore" title="A玩家得分"/>
+        <int name="bUid" title="B玩家ID"/>
+        <int name="bScore" title="B玩家得分"/>
+        <int name="winnerId" title="赢家ID"/>
+        <int name="idx" title="同一轮里的第几个配对"/>
+        <int name="aPower" title="A实力"/>
+        <int name="bPower" title="B实力"/>
+        <datetime name="uTime" title="更新时间"/>
+        <datetime name="cTime" title="创建时间"/>
+        <varchar name="aMap" length="1024" title="A" type="{uid:number,score:number,name:string,ico:string,sId:number,power:number,fmlName:string}" escape="true"/>
+        <varchar name="bMap" length="1024" title="B" type="{uid:number,score:number,name:string,ico:string,sId:number,power:number,fmlName:string}" escape="true"/>
+        <int name="betOnUid" title="下注的玩家" escape="true"/>
+    </table>
+
+    <table name="g_c_peak_select_fight" primary="id" keys="idx_uid_bid_rid_gid:uid,batchId,roomId,groupId">
+        <comment>巅峰赛海选赛赛战斗记录</comment>
+        <int name="id" auto="true">序号</int>
+        <int name="batchId" required="true" title="活动批次"/>
+        <int name="roomId" title="房间ID"/>
+        <int name="groupId" title="淘汰赛分组">
+            <comment>淘汰赛的初始化分组,在海选中决出</comment>
+            <combo>
+                <opt name="thetop" value="1">巅峰组</opt>
+                <opt name="heroes" value="2">精英组</opt>
+                <opt name="valiant" value="3">新秀组</opt>
+            </combo>
+        </int>
+        <int name="uid" title="打的玩家ID"/>
+        <int name="dstUid" title="目标玩家ID"/>
+        <int name="isWin" title="是否胜利"/>
+        <text name="fightRst" type="any" title="战斗参数"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_c_peak_round_fight" primary="id" keys="idx_bid_rid_gid_idx:batchId,roomId,groupId,idx;aUid;bUid">
+        <comment>巅峰赛淘汰赛战斗记录</comment>
+        <int name="id" auto="true">序号</int>
+        <int name="batchId" required="true" title="活动批次"/>
+        <int name="roomId" title="房间ID"/>
+        <int name="groupId" title="淘汰赛分组">
+            <comment>淘汰赛的初始化分组,在海选中决出</comment>
+            <combo>
+                <opt name="thetop" value="1">巅峰组</opt>
+                <opt name="heroes" value="2">精英组</opt>
+                <opt name="valiant" value="3">新秀组</opt>
+            </combo>
+        </int>
+        <int name="round">
+            <comment>淘汰赛到第几轮</comment>
+            <combo>
+                <opt name="r1" value="1">64强赛</opt>
+                <opt name="r2" value="2">32强赛</opt>
+                <opt name="r3" value="3">16强赛</opt>
+                <opt name="r4" value="4">8强赛</opt>
+                <opt name="r5" value="5">4强赛</opt>
+                <opt name="r6" value="6">半决赛</opt>
+                <opt name="r7" value="7">决赛</opt>
+            </combo>
+        </int>
+        <int name="idx" title="对战场标识"/>
+        <int name="session" title="第几场"/>
+        <int name="aUid" title="A玩家ID"/>
+        <int name="bUid" title="B玩家ID"/>
+        <int name="winnerId" title="赢家玩家ID"/>
+        <text name="fightRst" type="any" title="战斗参数"/>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+
+    <table name="g_c_peak_log" primary="id" keys="idx_bid_rid_mid:batchId,roomId,msgType">
+        <comment>巅峰赛执行日志表</comment>
+        <int name="id" auto="true">序号</int>
+        <int name="batchId" title="活动批次"/>
+        <int name="roomId" title="房间ID"/>
+        <varchar name="msgType" length="128" title="消息类型">
+            <combo>
+                <opt name="regEnd" value="runSelect">执行一次海选赛</opt>
+                <opt name="runSelect" value="runSelect">执行一次海选赛</opt>
+                <opt name="selectEnd" value="roundEnd">执行海选赛结束</opt>
+                <opt name="runRound" value="runRound">执行一场淘汰赛</opt>
+                <opt name="roundEnd" value="roundEnd">执行淘汰赛结束</opt>
+                <opt name="sendEndRwd" value="sendEndRwd">发放结束奖励</opt>
+            </combo>
+        </varchar>
+        <int name="opType" title="操作类型">
+            <combo>
+                <opt name="auto" value="0">定时自动</opt>
+                <opt name="gm" value="1">GM执行</opt>
+            </combo>
+        </int>
+        <datetime name="cTime" title="创建时间"/>
+    </table>
+</ds>

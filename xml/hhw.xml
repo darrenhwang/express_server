@@ -1,0 +1,22 @@
+<ds namespace="H" database="hhw">
+    <table name="hhw" primary="name">
+        <comment>存储过程</comment>
+        <varchar name="name" length="64">存储器名</varchar>
+        <text name="text">存储过程</text>
+        <varchar name="ext" length="64">描述</varchar>
+    </table>
+
+    <table name="testRequest" primary="name">
+        <comment>接口测试</comment>
+        <varchar name="name" length="128">接口名</varchar>
+        <varchar name="args" length="512" type="any" default="{}">参数</varchar>
+        <varchar name="ext" length="256">备注</varchar>
+    </table>
+
+    <table name="teamCfg" primary="name">
+        <comment>接口测试</comment>
+        <varchar name="name" length="32">team名字</varchar>
+        <text name="cfgList" type="any[]">url和描述配置</text>
+        <varchar name="ext" length="256" type="any" default="{}">拓展</varchar>
+    </table>
+</ds>
